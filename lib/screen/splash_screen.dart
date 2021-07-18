@@ -11,7 +11,7 @@ class SplashScreen extends StatelessWidget {
       body: Stack(
         children: [
           Positioned(
-            bottom: -18,
+            bottom: -24,
             child: SvgPicture.asset(
               'assets/texture_splash.svg',
               width: MediaQuery.of(context).size.width,
