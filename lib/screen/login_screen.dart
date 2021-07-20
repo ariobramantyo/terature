@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:terature/screen/sign_up_screen.dart';
+import 'package:terature/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -57,7 +58,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _formField(TextEditingController controller, String hint,
-      FocusNode focusNode, Color color, Widget suffix, bool obscure) {
+      FocusNode focusNode, Color color, bool obscure,
+      {Widget? suffix}) {
     return Container(
       width: 256,
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
@@ -146,16 +148,21 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Container(
-                        height: 38,
-                        width: 121,
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            color: Color(0xFF262626),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: SvgPicture.asset(
-                          'assets/google_logo.svg',
-                        )),
+                    GestureDetector(
+                      onTap: () async {
+                        await AuthService.googleSignIn();
+                      },
+                      child: Container(
+                          height: 38,
+                          width: 121,
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              color: Color(0xFF262626),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: SvgPicture.asset(
+                            'assets/google_logo.svg',
+                          )),
+                    ),
                     Container(
                         height: 38,
                         width: 121,
@@ -174,34 +181,35 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     children: [
                       _formField(_emailController, 'Email', _emailFieldFocus,
-                          _emailColor, SizedBox.shrink(), false),
+                          _emailColor, false),
                       SizedBox(
                         height: 22,
                       ),
                       _formField(
-                          _passwordController,
-                          'Password',
-                          _passwordFieldFocus,
-                          _passwordColor,
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _obscureText = !_obscureText;
-                              });
-                            },
-                            child: _obscureText
-                                ? Icon(
-                                    Icons.visibility_off_outlined,
-                                    color: Colors.white,
-                                    size: 18,
-                                  )
-                                : Icon(
-                                    Icons.visibility_outlined,
-                                    color: Colors.white,
-                                    size: 18,
-                                  ),
-                          ),
-                          _obscureText),
+                        _passwordController,
+                        'Password',
+                        _passwordFieldFocus,
+                        _passwordColor,
+                        _obscureText,
+                        suffix: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
+                          child: _obscureText
+                              ? Icon(
+                                  Icons.visibility_off_outlined,
+                                  color: Colors.white,
+                                  size: 18,
+                                )
+                              : Icon(
+                                  Icons.visibility_outlined,
+                                  color: Colors.white,
+                                  size: 18,
+                                ),
+                        ),
+                      ),
                     ],
                   )),
               SizedBox(
@@ -223,8 +231,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: () {
+                onTap: () async {
                   if (_key.currentState!.validate()) {
+                    try {
+                      await AuthService.signIn(
+                          _emailController.text, _passwordController.text);
+                    } catch (e) {
+                      print(e.toString());
+                    }
+
                     print('sukses');
                   }
                 },
@@ -266,7 +281,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
                       return SignUpScreen();
-                    })).then((value) => setState(() {}));
+                    }));
                   },
                   child: Text('Sign up',
                       style: TextStyle(

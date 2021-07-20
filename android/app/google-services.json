@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "369536297704",
+    "project_id": "terature",
+    "storage_bucket": "terature.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:369536297704:android:2b63314f5dc7f23ce7f75d",
+        "android_client_info": {
+          "package_name": "com.example.terature"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "369536297704-tsd7ot2de6d89ll0b2th7csstbv33d09.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.terature",
+            "certificate_hash": "c8bc14dcb0d053f8fb2028b969a547d424369890"
+          }
+        },
+        {
+          "client_id": "369536297704-kpjtdkpsbu8g68arhimrh6m4mjir9jsm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASfIajnNRe2Dkbvfmy4bmm3GBIoRcLx2k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "369536297704-kpjtdkpsbu8g68arhimrh6m4mjir9jsm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

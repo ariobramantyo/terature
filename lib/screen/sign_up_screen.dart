@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:terature/services/auth_service.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -87,8 +88,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Widget _formField(TextEditingController controller, String hint,
-      FocusNode focusNode, Color color, Widget suffix, bool obscure,
-      {String? Function(String?)? validate, TextInputType? inputType}) {
+      FocusNode focusNode, Color color, bool obscure,
+      {String? Function(String?)? validate,
+      TextInputType? inputType,
+      Widget? suffix}) {
     return Container(
       width: 256,
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
@@ -190,16 +193,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Container(
-                                height: 38,
-                                width: 121,
-                                padding: EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                    color: Color(0xFF262626),
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: SvgPicture.asset(
-                                  'assets/google_logo.svg',
-                                )),
+                            GestureDetector(
+                              onTap: () async {
+                                await AuthService.googleSignIn();
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                  height: 38,
+                                  width: 121,
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                      color: Color(0xFF262626),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: SvgPicture.asset(
+                                    'assets/google_logo.svg',
+                                  )),
+                            ),
                             Container(
                                 height: 38,
                                 width: 121,
@@ -217,23 +226,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           key: _key,
                           child: Column(
                             children: [
-                              _formField(
-                                  _namaController,
-                                  'Nama',
-                                  _namaFieldFocus,
-                                  _namaColor,
-                                  SizedBox.shrink(),
-                                  false),
+                              _formField(_namaController, 'Nama',
+                                  _namaFieldFocus, _namaColor, false),
                               SizedBox(
                                 height: 25,
                               ),
-                              _formField(
-                                  _emailController,
-                                  'Email',
-                                  _emailFieldFocus,
-                                  _emailColor,
-                                  SizedBox.shrink(),
-                                  false),
+                              _formField(_emailController, 'Email',
+                                  _emailFieldFocus, _emailColor, false),
                               SizedBox(
                                 height: 25,
                               ),
@@ -242,7 +241,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   'No telefon',
                                   _noFieldFocus,
                                   _noColor,
-                                  SizedBox.shrink(),
                                   false, validate: (value) {
                                 if (value!.isEmpty) {
                                   return 'This field can\'t be empty';
@@ -254,37 +252,45 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 height: 25,
                               ),
                               _formField(
-                                  _passwordController,
-                                  'Password',
-                                  _passwordFieldFocus,
-                                  _passwordColor,
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        _obscureText = !_obscureText;
-                                      });
-                                    },
-                                    child: _obscureText
-                                        ? Icon(
-                                            Icons.visibility_off_outlined,
-                                            color: Colors.white,
-                                            size: 18,
-                                          )
-                                        : Icon(
-                                            Icons.visibility_outlined,
-                                            color: Colors.white,
-                                            size: 18,
-                                          ),
-                                  ),
-                                  _obscureText),
+                                _passwordController,
+                                'Password',
+                                _passwordFieldFocus,
+                                _passwordColor,
+                                _obscureText,
+                                suffix: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _obscureText = !_obscureText;
+                                    });
+                                  },
+                                  child: _obscureText
+                                      ? Icon(
+                                          Icons.visibility_off_outlined,
+                                          color: Colors.white,
+                                          size: 18,
+                                        )
+                                      : Icon(
+                                          Icons.visibility_outlined,
+                                          color: Colors.white,
+                                          size: 18,
+                                        ),
+                                ),
+                              ),
                             ],
                           )),
                       SizedBox(
                         height: 41,
                       ),
                       GestureDetector(
-                        onTap: () {
+                        onTap: () async {
                           if (_key.currentState!.validate()) {
+                            try {
+                              await AuthService.signUp(_emailController.text,
+                                  _passwordController.text);
+                              Navigator.pop(context);
+                            } catch (e) {
+                              print(e.toString());
+                            }
                             print('sukses');
                           }
                         },
