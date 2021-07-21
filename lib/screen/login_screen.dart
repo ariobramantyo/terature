@@ -163,13 +163,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             'assets/google_logo.svg',
                           )),
                     ),
-                    Container(
-                        height: 38,
-                        width: 121,
-                        padding: EdgeInsets.all(8),
-                        child: SvgPicture.asset(
-                          'assets/facebook_logo.svg',
-                        ))
+                    GestureDetector(
+                      onTap: () async {
+                        await AuthService.facebookSignIn();
+                      },
+                      child: Container(
+                          height: 38,
+                          width: 121,
+                          padding: EdgeInsets.all(8),
+                          child: SvgPicture.asset(
+                            'assets/facebook_logo.svg',
+                          )),
+                    )
                   ],
                 ),
               ),

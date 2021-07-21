@@ -209,13 +209,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     'assets/google_logo.svg',
                                   )),
                             ),
-                            Container(
-                                height: 38,
-                                width: 121,
-                                padding: EdgeInsets.all(8),
-                                child: SvgPicture.asset(
-                                  'assets/facebook_logo.svg',
-                                ))
+                            GestureDetector(
+                              onTap: () async {
+                                await AuthService.facebookSignIn();
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                  height: 38,
+                                  width: 121,
+                                  padding: EdgeInsets.all(8),
+                                  child: SvgPicture.asset(
+                                    'assets/facebook_logo.svg',
+                                  )),
+                            )
                           ],
                         ),
                       ),
