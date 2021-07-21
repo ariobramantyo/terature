@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -30,7 +31,7 @@ class AuthService {
     await _googleSignIn.signOut();
   }
 
-  static Future<void> googleSignIn() async {
+  static Future<void> googleSignIn(BuildContext context) async {
     try {
       GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
 
@@ -45,12 +46,45 @@ class AuthService {
         UserCredential userCredential =
             await _auth.signInWithCredential(authCredential);
       }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'account-exists-with-different-credential') {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                title: Text('Error'),
+                content: Text(e.message!),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        'Cancel',
+                        style: TextStyle(color: Colors.red),
+                      )),
+                  TextButton(
+                      onPressed: () async {
+                        Navigator.pop(context);
+                        List<String> emailList = await FirebaseAuth.instance
+                            .fetchSignInMethodsForEmail(e.email!);
+                        if (emailList.first == "facebook.com") {
+                          await facebookSignIn(context);
+                        }
+                      },
+                      child: Text('Ok'))
+                ],
+              );
+            });
+      }
     } catch (e) {
       print(e.toString());
     }
   }
 
-  static Future<void> facebookSignIn() async {
+  static Future<void> facebookSignIn(BuildContext context) async {
     try {
       final LoginResult result = await FacebookAuth.instance.login();
 
@@ -60,6 +94,39 @@ class AuthService {
 
         UserCredential userCredential =
             await _auth.signInWithCredential(authCredential);
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'account-exists-with-different-credential') {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                title: Text('Error'),
+                content: Text(e.message!),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        'Cancel',
+                        style: TextStyle(color: Colors.red),
+                      )),
+                  TextButton(
+                      onPressed: () async {
+                        Navigator.pop(context);
+                        List<String> emailList = await FirebaseAuth.instance
+                            .fetchSignInMethodsForEmail(e.email!);
+                        if (emailList.first == "google.com") {
+                          await googleSignIn(context);
+                        }
+                      },
+                      child: Text('Ok'))
+                ],
+              );
+            });
       }
     } catch (e) {
       print(e.toString());

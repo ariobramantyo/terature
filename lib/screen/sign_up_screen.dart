@@ -195,7 +195,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           children: [
                             GestureDetector(
                               onTap: () async {
-                                await AuthService.googleSignIn();
+                                await AuthService.googleSignIn(context);
                                 Navigator.pop(context);
                               },
                               child: Container(
@@ -211,7 +211,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             GestureDetector(
                               onTap: () async {
-                                await AuthService.facebookSignIn();
+                                await AuthService.facebookSignIn(context);
                                 Navigator.pop(context);
                               },
                               child: Container(
