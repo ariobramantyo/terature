@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:terature/model/user.dart';
 import 'package:terature/screen/login_screen.dart';
 import 'package:terature/services/auth_service.dart';
 
@@ -254,7 +256,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   return 'This field can\'t be empty';
                                 } else if (value.length < 11) {
                                   return 'Phone number minimum 11 number';
-                                } else if (value.length > 11) {
+                                } else if (value.length > 12) {
                                   return 'Phone number maximum 12 number';
                                 }
                               }, inputType: TextInputType.number),
@@ -297,6 +299,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             try {
                               await AuthService.signUp(_emailController.text,
                                   _passwordController.text);
+                              UserData userData = UserData(
+                                  name: _namaController.text,
+                                  email: _emailController.text,
+                                  no: _noController.text);
+                              FirebaseFirestore.instance
+                                  .collection('user')
+                                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                                  .collection('data')
+                                  .add(userData.toMap());
                               Navigator.pop(context);
                             } on FirebaseAuthException catch (e) {
                               if (e.code == 'weak-password') {
