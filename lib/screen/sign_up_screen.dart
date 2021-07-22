@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:terature/screen/login_screen.dart';
 import 'package:terature/services/auth_service.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -252,6 +254,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   return 'This field can\'t be empty';
                                 } else if (value.length < 11) {
                                   return 'Phone number minimum 11 number';
+                                } else if (value.length > 11) {
+                                  return 'Phone number maximum 12 number';
                                 }
                               }, inputType: TextInputType.number),
                               SizedBox(
@@ -294,6 +298,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               await AuthService.signUp(_emailController.text,
                                   _passwordController.text);
                               Navigator.pop(context);
+                            } on FirebaseAuthException catch (e) {
+                              if (e.code == 'weak-password') {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => alertDialog(
+                                        context,
+                                        'Invalid Password',
+                                        'Password must contain atleast 6 character. Please try again with the correct password'));
+                              } else if (e.code == 'invalid-email') {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => alertDialog(
+                                        context,
+                                        'Invalid Email',
+                                        'Please try again with the correct email! format'));
+                              } else if (e.code == 'email-already-in-use') {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => alertDialog(
+                                        context,
+                                        'Email Alredy Exists',
+                                        'The email provided is already in use by an existing user. Please sign in with your registered email'));
+                              }
                             } catch (e) {
                               print(e.toString());
                             }

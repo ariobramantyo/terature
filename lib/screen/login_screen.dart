@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:terature/screen/sign_up_screen.dart';
@@ -241,6 +242,27 @@ class _LoginScreenState extends State<LoginScreen> {
                     try {
                       await AuthService.signIn(
                           _emailController.text, _passwordController.text);
+                    } on FirebaseAuthException catch (e) {
+                      if (e.code == 'wrong-password') {
+                        showDialog(
+                            context: context,
+                            builder: (context) => alertDialog(context,
+                                'Invalid Password', 'Wrong password or email'));
+                      } else if (e.code == 'invalid-email') {
+                        showDialog(
+                            context: context,
+                            builder: (context) => alertDialog(
+                                context,
+                                'Invalid Email',
+                                'Please try again with the correct email!'));
+                      } else if (e.code == 'user-not-found') {
+                        showDialog(
+                            context: context,
+                            builder: (context) => alertDialog(
+                                context,
+                                'User Not Found',
+                                'Email that you use not registered yet. Try to sign up first'));
+                      }
                     } catch (e) {
                       print(e.toString());
                     }
@@ -287,6 +309,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         MaterialPageRoute(builder: (context) {
                       return SignUpScreen();
                     }));
+                    _emailController.text = '';
+                    _passwordController.text = '';
                   },
                   child: Text('Sign up',
                       style: TextStyle(
@@ -300,4 +324,42 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+}
+
+Widget alertDialog(BuildContext context, String title, String content) {
+  return AlertDialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    title: Text(
+      title,
+      style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.bold),
+    ),
+    content: Text(
+      content,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+          fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.w400),
+    ),
+    actions: [
+      InkWell(
+        onTap: () {
+          Navigator.pop(context);
+        },
+        child: Center(
+          child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              margin: EdgeInsets.only(bottom: 10),
+              decoration: BoxDecoration(
+                  color: Colors.red, borderRadius: BorderRadius.circular(10)),
+              child: Text(
+                'Retry',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.bold),
+              )),
+        ),
+      )
+    ],
+    actionsPadding: EdgeInsets.symmetric(horizontal: 10),
+  );
 }
