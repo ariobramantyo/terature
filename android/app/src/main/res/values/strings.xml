@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Terature</string>
+    <string name="facebook_app_id">241795054454732</string>
+    <string name="fb_login_protocol_scheme">fb241795054454732</string>
+</resources>
