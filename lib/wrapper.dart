@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:terature/screen/home_screen.dart';
 import 'package:terature/screen/login_screen.dart';
-import 'package:terature/screen/splash_screen.dart';
 import 'package:terature/services/auth_service.dart';
 
 class Wrapper extends StatelessWidget {
