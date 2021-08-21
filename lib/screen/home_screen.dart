@@ -42,14 +42,14 @@ class HomeScreen extends StatelessWidget {
         shape: CircularNotchedRectangle(),
         notchMargin: 10,
         child: Container(
-          margin: EdgeInsets.only(bottom: 20, left: 20, right: 20),
+          margin: EdgeInsets.only(bottom: 20, left: 15, right: 15),
           height: 60,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
             color: Color(0xffFFA726),
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
                 flex: 2,
@@ -60,24 +60,24 @@ class HomeScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       MaterialButton(
-                          minWidth: 40,
+                          minWidth: 30,
                           onPressed: () {
                             navController.pageChange(0);
                           },
                           child: Icon(
                             Icons.home,
                             color: Colors.white,
-                            size: 30,
+                            size: 26,
                           )),
                       MaterialButton(
-                          minWidth: 40,
+                          minWidth: 30,
                           onPressed: () {
                             navController.pageChange(1);
                           },
                           child: Icon(
                             Icons.email,
                             color: Colors.white,
-                            size: 30,
+                            size: 26,
                           )),
                     ],
                   ),
@@ -104,7 +104,7 @@ class HomeScreen extends StatelessWidget {
                           child: Icon(
                             Icons.settings,
                             color: Colors.white,
-                            size: 32,
+                            size: 26,
                           )),
                       MaterialButton(
                           minWidth: 40,
@@ -114,7 +114,7 @@ class HomeScreen extends StatelessWidget {
                           child: Icon(
                             Icons.person,
                             color: Colors.white,
-                            size: 32,
+                            size: 26,
                           )),
                     ],
                   ),
