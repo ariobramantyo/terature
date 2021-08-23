@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:terature/model/user.dart';
 import 'package:terature/screen/login_screen.dart';
 import 'package:terature/services/auth_service.dart';
+import 'package:terature/services/firestore_service.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -200,6 +201,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             GestureDetector(
                               onTap: () async {
                                 await AuthService.googleSignIn(context);
+                                //     .then((value) {
+                                //   var user = FirebaseAuth.instance.currentUser;
+                                //   FirestoreService.addUserDataToFirestore(
+                                //       FirebaseAuth.instance.currentUser,
+                                //       UserData(
+                                //           name: user!.displayName!,
+                                //           email: user.email!,
+                                //           no: user.phoneNumber!,
+                                //           imageUrl: user.photoURL!));
+                                // });
                                 Navigator.pop(context);
                               },
                               child: Container(
@@ -216,6 +227,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             GestureDetector(
                               onTap: () async {
                                 await AuthService.facebookSignIn(context);
+                                //     .then((value) {
+                                //   var user = FirebaseAuth.instance.currentUser;
+                                //   FirestoreService.addUserDataToFirestore(
+                                //       FirebaseAuth.instance.currentUser,
+                                //       UserData(
+                                //           name: user!.displayName!,
+                                //           email: user.email!,
+                                //           no: user.phoneNumber!,
+                                //           imageUrl: user.photoURL!));
+                                // });
                                 Navigator.pop(context);
                               },
                               child: Container(
@@ -299,15 +320,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             try {
                               await AuthService.signUp(_emailController.text,
                                   _passwordController.text);
-                              UserData userData = UserData(
-                                  name: _namaController.text,
-                                  email: _emailController.text,
-                                  no: _noController.text);
-                              FirebaseFirestore.instance
-                                  .collection('user')
-                                  .doc(FirebaseAuth.instance.currentUser!.uid)
-                                  .collection('data')
-                                  .add(userData.toMap());
+                              // .then((value) {
+                              // var user = FirebaseAuth.instance.currentUser;
+                              // FirestoreService.addUserDataToFirestore(
+                              //     FirebaseAuth.instance.currentUser,
+                              //     UserData(
+                              //       name: _namaController.text,
+                              //       email: _emailController.text,
+                              //       no: _noController.text,
+                              //     ));
+                              // });
+                              // UserData userData = UserData(
+                              //     name: _namaController.text,
+                              //     email: _emailController.text,
+                              //     no: _noController.text);
+                              // FirebaseFirestore.instance
+                              //     .collection('user')
+                              //     .doc(FirebaseAuth.instance.currentUser!.uid)
+                              //     .collection('data')
+                              //     .add(userData.toMap());
                               Navigator.pop(context);
                             } on FirebaseAuthException catch (e) {
                               if (e.code == 'weak-password') {

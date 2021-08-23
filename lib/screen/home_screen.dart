@@ -2,7 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:terature/controllers/navbar_controller.dart';
-import 'package:terature/services/auth_service.dart';
+import 'package:terature/screen/dashboard.dart';
+import 'package:terature/screen/profile.dart';
+import 'package:terature/screen/settings.dart';
+import 'package:terature/screen/widgets/add_task.dart';
 
 class HomeScreen extends StatelessWidget {
   final User? user;
@@ -11,122 +14,142 @@ class HomeScreen extends StatelessWidget {
   final PageStorageBucket bucket = PageStorageBucket();
   final navController = Get.put(NavBarController());
 
+  List screens = [
+    Dashboard(),
+    Settings(),
+    Profile(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     print(
         'BUILD==========================================================================================');
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Home Screen'),
-        backgroundColor: Color(0xFFFF7A00),
-        actions: [
-          IconButton(
-              onPressed: () async {
-                await AuthService.signOut();
-              },
-              icon: Icon(Icons.logout))
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Color(0xffFF7A00),
-        elevation: 0,
-        shape: CircleBorder(side: BorderSide(width: 4, color: Colors.white)),
-        child: Icon(
-          Icons.add,
-          size: 35,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
         notchMargin: 10,
         child: Container(
           margin: EdgeInsets.only(bottom: 20, left: 15, right: 15),
-          height: 60,
+          height: 61,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
             color: Color(0xffFFA726),
           ),
           child: Row(
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Flexible(
-                flex: 2,
-                child: Container(
-                  // color: Colors.blueGrey,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              MaterialButton(
+                  minWidth: 30,
+                  onPressed: () {
+                    navController.pageChange(0);
+                  },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      MaterialButton(
-                          minWidth: 30,
-                          onPressed: () {
-                            navController.pageChange(0);
-                          },
-                          child: Icon(
-                            Icons.home,
-                            color: Colors.white,
-                            size: 26,
-                          )),
-                      MaterialButton(
-                          minWidth: 30,
-                          onPressed: () {
-                            navController.pageChange(1);
-                          },
-                          child: Icon(
-                            Icons.email,
-                            color: Colors.white,
-                            size: 26,
-                          )),
+                      SizedBox(height: 10),
+                      Icon(
+                        Icons.home,
+                        color: Colors.white,
+                        size: 26,
+                      ),
+                      SizedBox(height: 5),
+                      Obx(() => Container(
+                            height: 5,
+                            width: 5,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: navController.currentTab.value == 0
+                                  ? Colors.white
+                                  : Colors.transparent,
+                            ),
+                          ))
                     ],
-                  ),
-                ),
-              ),
-              Flexible(
-                  flex: 1,
+                  )),
+              MaterialButton(
+                  minWidth: 30,
+                  onPressed: () {
+                    navController.pageChange(1);
+                  },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(height: 10),
+                      Icon(
+                        Icons.settings,
+                        color: Colors.white,
+                        size: 26,
+                      ),
+                      SizedBox(height: 5),
+                      Obx(() => Container(
+                            height: 5,
+                            width: 5,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: navController.currentTab.value == 1
+                                  ? Colors.white
+                                  : Colors.transparent,
+                            ),
+                          ))
+                    ],
+                  )),
+              MaterialButton(
+                  minWidth: 40,
+                  onPressed: () {
+                    navController.pageChange(2);
+                  },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(height: 10),
+                      Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: 26,
+                      ),
+                      SizedBox(height: 5),
+                      Obx(() => Container(
+                            height: 5,
+                            width: 5,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: navController.currentTab.value == 2
+                                  ? Colors.white
+                                  : Colors.transparent,
+                            ),
+                          ))
+                    ],
+                  )),
+              MaterialButton(
+                  minWidth: 40,
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      enableDrag: false,
+                      isScrollControlled: true,
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(30))),
+                      builder: (context) => AddTask(),
+                    );
+                  },
                   child: Container(
-                      // color: Colors.red,
-                      )),
-              Flexible(
-                flex: 2,
-                child: Container(
-                  // color: Colors.green,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      MaterialButton(
-                          minWidth: 40,
-                          onPressed: () {
-                            navController.pageChange(2);
-                          },
-                          child: Icon(
-                            Icons.settings,
-                            color: Colors.white,
-                            size: 26,
-                          )),
-                      MaterialButton(
-                          minWidth: 40,
-                          onPressed: () {
-                            navController.pageChange(3);
-                          },
-                          child: Icon(
-                            Icons.person,
-                            color: Colors.white,
-                            size: 26,
-                          )),
-                    ],
-                  ),
-                ),
-              )
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                    ),
+                    child: Icon(
+                      Icons.add,
+                      color: Color(0xffFFA726),
+                    ),
+                  )),
             ],
           ),
         ),
       ),
       body: Obx(() => PageStorage(
-          bucket: bucket,
-          child: navController.screens[navController.currentTab.value])),
+          bucket: bucket, child: screens[navController.currentTab.value])),
       // body: (user!.displayName == null)
       //     ? FutureBuilder<QuerySnapshot>(
       //         future: FirebaseFirestore.instance

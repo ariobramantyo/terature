@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:terature/services/auth_service.dart';
 
 class Settings extends StatelessWidget {
   const Settings({Key? key}) : super(key: key);
@@ -7,11 +8,11 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text(
-          'Settings',
-          style: TextStyle(fontSize: 30),
-        ),
-      ),
+          child: IconButton(
+              onPressed: () async {
+                await AuthService.signOut();
+              },
+              icon: Icon(Icons.logout))),
     );
   }
 }

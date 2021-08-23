@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:terature/model/user.dart';
 import 'package:terature/screen/sign_up_screen.dart';
 import 'package:terature/services/auth_service.dart';
+import 'package:terature/services/firestore_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -24,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   OutlineInputBorder _outlineBorder = OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(10)),
-      borderSide: BorderSide.none);
+      borderSide: BorderSide(color: Colors.pink, style: BorderStyle.solid));
 
   void dispose() {
     _emailController.dispose();
@@ -152,6 +154,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     GestureDetector(
                       onTap: () async {
                         await AuthService.googleSignIn(context);
+                        // var user = FirebaseAuth.instance.currentUser;
+                        // FirestoreService.addUserDataToFirestore(
+                        //     FirebaseAuth.instance.currentUser,
+                        //     UserData(
+                        //         name: user!.displayName!,
+                        //         email: user.email!,
+                        //         no: user.phoneNumber ?? '',
+                        //         imageUrl: user.photoURL!));
                       },
                       child: Container(
                           height: 38,
@@ -166,7 +176,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     GestureDetector(
                       onTap: () async {
-                        await AuthService.facebookSignIn(context);
+                        await AuthService.facebookSignIn(context).then((value) {
+                          // var user = FirebaseAuth.instance.currentUser;
+                          // FirestoreService.addUserDataToFirestore(
+                          //     FirebaseAuth.instance.currentUser,
+                          //     UserData(
+                          //         name: user!.displayName!,
+                          //         email: user.email!,
+                          //         no: user.phoneNumber!,
+                          //         imageUrl: user.photoURL!));
+                        });
                       },
                       child: Container(
                           height: 38,

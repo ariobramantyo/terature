@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:terature/screen/login_screen.dart';
 import 'package:terature/wrapper.dart';
 
 class SplashScreen extends StatelessWidget {
