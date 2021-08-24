@@ -164,7 +164,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
         ),
         Container(
           width: double.infinity,
-          height: Get.height * 0.51,
+          height: Get.height * 0.53,
           // color: Colors.blueGrey,
           child: TabBarView(
             controller: _tabController,
@@ -194,6 +194,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                             onDismissed: (_) {
                               FirestoreService.deleteTask(
                                 FirebaseAuth.instance.currentUser,
+                                cldrController.dateNow.value,
                                 snapshot.data!.docs[index].id,
                               );
                             },
@@ -246,6 +247,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                             onDismissed: (_) {
                               FirestoreService.deleteTask(
                                 FirebaseAuth.instance.currentUser,
+                                cldrController.dateNow.value,
                                 snapshot.data!.docs[index].id,
                               );
                             },

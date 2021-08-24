@@ -32,11 +32,11 @@ class FirestoreService {
     }
   }
 
-  static void deleteTask(User? user, String docId) {
+  static void deleteTask(User? user, String collection, String docId) {
     FirebaseFirestore.instance
         .collection('user')
         .doc(user!.uid)
-        .collection('taskHarian')
+        .collection(collection)
         .doc(docId)
         .delete();
   }
