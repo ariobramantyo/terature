@@ -28,6 +28,8 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
 
   DateTime _focusedDay = DateTime.now();
 
+  late TabController _tabController;
+
   Widget checkboxTask(Task task, String docId, String collection) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -40,9 +42,15 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
         CustomCheckBox(
           value: task.isDone,
           onChanged: (_) {
-            print(docId);
             FirestoreService.checkTask(
                 FirebaseAuth.instance.currentUser, collection, docId, task);
+            if (task.isDone) {
+              Get.snackbar('Task kembali dikerjakan',
+                  'task ${task.judul} dipindahkan ke dalam tab on going');
+            } else {
+              Get.snackbar('Task selesai',
+                  'task ${task.judul} dipindahkan ke dalam tab completed');
+            }
           },
           checkBoxSize: 18,
           checkedFillColor: Color(0xffFF810C),
@@ -54,9 +62,21 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: ListView(
+        body: Column(
       children: [
         //header
         SafeArea(
@@ -105,96 +125,158 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
           locale: 'en_ISO',
         ),
 
-        SizedBox(height: 10),
+        SizedBox(height: 0),
 
         Container(
           height: 60,
           margin: EdgeInsets.symmetric(horizontal: 20),
           child: TabBar(
-              unselectedLabelColor: Colors.grey[400],
-              indicatorSize: TabBarIndicatorSize.label,
-              labelColor: Colors.amber,
-              labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-              indicator: BoxDecoration(
-                // borderRadius: BorderRadius.circular(5),
-                border: Border(
-                  bottom: BorderSide(
-                    width: 5,
-                    color: Colors.amber,
-                  ),
+            unselectedLabelColor: Colors.grey[400],
+            indicatorSize: TabBarIndicatorSize.label,
+            labelColor: Colors.amber,
+            labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+            indicator: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  width: 5,
+                  color: Colors.amber,
                 ),
-                // color: Colors.redAccent,
               ),
-              controller: TabController(length: 2, vsync: this),
-              tabs: [
-                Tab(
-                  child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        'On going',
-                      )),
-                ),
-                Tab(
-                  child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        'Completed',
-                      )),
-                ),
-              ]),
+            ),
+            controller: _tabController,
+            tabs: [
+              Tab(
+                child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'On going',
+                    )),
+              ),
+              Tab(
+                child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Completed',
+                    )),
+              ),
+            ],
+          ),
         ),
-
-        SizedBox(height: 20),
-
-        Obx(
-          () => StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('user')
-                .doc(FirebaseAuth.instance.currentUser!.uid)
-                .collection(cldrController.dateNow.value)
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: ClampingScrollPhysics(),
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context, index) {
-                    var task = Task.fromSnapshot(snapshot.data!.docs[index]
-                        as QueryDocumentSnapshot<Map<String, dynamic>>);
-                    return Dismissible(
-                      key: UniqueKey(),
-                      onDismissed: (_) {
-                        FirestoreService.deleteTask(
-                          FirebaseAuth.instance.currentUser,
-                          snapshot.data!.docs[index].id,
-                        );
-                      },
-                      child: Container(
-                        width: double.infinity,
-                        height: 50,
-                        padding: EdgeInsets.only(left: 15, right: 10),
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.amber[100]),
-                        child: checkboxTask(
-                          task,
-                          snapshot.data!.docs[index].id,
-                          cldrController.dateNow.value,
-                        ),
-                      ),
+        Container(
+          width: double.infinity,
+          height: Get.height * 0.51,
+          // color: Colors.blueGrey,
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              Obx(
+                () => StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('user')
+                      .doc(FirebaseAuth.instance.currentUser!.uid)
+                      .collection(cldrController.dateNow.value)
+                      .where('isDone', isEqualTo: false)
+                      // .orderBy('jamDeadline')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        padding: EdgeInsets.only(top: 10),
+                        // shrinkWrap: true,
+                        // physics: ClampingScrollPhysics(),
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          var task = Task.fromSnapshot(snapshot
+                                  .data!.docs[index]
+                              as QueryDocumentSnapshot<Map<String, dynamic>>);
+                          return Dismissible(
+                            key: UniqueKey(),
+                            onDismissed: (_) {
+                              FirestoreService.deleteTask(
+                                FirebaseAuth.instance.currentUser,
+                                snapshot.data!.docs[index].id,
+                              );
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              height: 50,
+                              padding: EdgeInsets.only(left: 15, right: 10),
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.amber[100]),
+                              child: checkboxTask(
+                                task,
+                                snapshot.data!.docs[index].id,
+                                cldrController.dateNow.value,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }
+                    return Center(
+                      child: CircularProgressIndicator(),
                     );
                   },
-                );
-              }
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            },
+                ),
+              ),
+              Obx(
+                () => StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('user')
+                      .doc(FirebaseAuth.instance.currentUser!.uid)
+                      .collection(cldrController.dateNow.value)
+                      .where('isDone', isEqualTo: true)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        padding: EdgeInsets.only(top: 10),
+                        // shrinkWrap: true,
+                        // physics: ClampingScrollPhysics(),
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          var task = Task.fromSnapshot(snapshot
+                                  .data!.docs[index]
+                              as QueryDocumentSnapshot<Map<String, dynamic>>);
+                          return Dismissible(
+                            key: UniqueKey(),
+                            onDismissed: (_) {
+                              FirestoreService.deleteTask(
+                                FirebaseAuth.instance.currentUser,
+                                snapshot.data!.docs[index].id,
+                              );
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              height: 50,
+                              padding: EdgeInsets.only(left: 15, right: 10),
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.amber[100]),
+                              child: checkboxTask(
+                                task,
+                                snapshot.data!.docs[index].id,
+                                cldrController.dateNow.value,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
-        )
+        ),
       ],
     ));
   }

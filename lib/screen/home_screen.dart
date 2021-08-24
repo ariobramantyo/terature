@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
         shape: CircularNotchedRectangle(),
         notchMargin: 10,
         child: Container(
-          margin: EdgeInsets.only(bottom: 20, left: 15, right: 15),
+          margin: EdgeInsets.only(bottom: 15, left: 15, right: 15),
           height: 61,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
