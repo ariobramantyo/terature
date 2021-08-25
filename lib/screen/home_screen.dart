@@ -25,7 +25,9 @@ class HomeScreen extends StatelessWidget {
     print(
         'BUILD==========================================================================================');
     return Scaffold(
+      backgroundColor: Color(0xff353535),
       bottomNavigationBar: BottomAppBar(
+        color: Color(0xff353535),
         shape: CircularNotchedRectangle(),
         notchMargin: 10,
         child: Container(
@@ -33,7 +35,7 @@ class HomeScreen extends StatelessWidget {
           height: 61,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
-            color: Color(0xffFFA726),
+            color: Color(0xff000000),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -138,10 +140,18 @@ class HomeScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: Colors.white,
+                      gradient: LinearGradient(
+                        colors: [
+                          Color(0xffFF810C),
+                          Color(0xffFFB066),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
                     ),
                     child: Icon(
                       Icons.add,
-                      color: Color(0xffFFA726),
+                      color: Colors.white,
                     ),
                   )),
             ],

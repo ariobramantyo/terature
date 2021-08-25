@@ -1,10 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:terature/model/user.dart';
 import 'package:terature/screen/sign_up_screen.dart';
 import 'package:terature/services/auth_service.dart';
-import 'package:terature/services/firestore_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -20,13 +18,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   FocusNode _emailFieldFocus = FocusNode();
   FocusNode _passwordFieldFocus = FocusNode();
-  Color _emailColor = Color(0xFF474747);
-  Color _passwordColor = Color(0xFF474747);
+  Color _emailColor = Color(0xFF353535);
+  Color _passwordColor = Color(0xFF353535);
   bool _obscureText = true;
 
   OutlineInputBorder _outlineBorder = OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(10)),
-      borderSide: BorderSide(color: Colors.pink, style: BorderStyle.solid));
+      borderSide: BorderSide.none);
 
   void dispose() {
     _emailController.dispose();
@@ -38,22 +36,22 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailFieldFocus.addListener(() {
       if (_emailFieldFocus.hasFocus) {
         setState(() {
-          _emailColor = Color(0xFF262626);
+          _emailColor = Color(0xFF575757);
         });
       } else {
         setState(() {
-          _emailColor = Color(0xFF474747);
+          _emailColor = Color(0xFF353535);
         });
       }
     });
     _passwordFieldFocus.addListener(() {
       if (_passwordFieldFocus.hasFocus) {
         setState(() {
-          _passwordColor = Color(0xFF262626);
+          _passwordColor = Color(0xFF575757);
         });
       } else {
         setState(() {
-          _passwordColor = Color(0xFF474747);
+          _passwordColor = Color(0xFF353535);
         });
       }
     });
@@ -104,241 +102,238 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
-      body: Stack(
+      backgroundColor: Color(0xff0F0F0F),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Positioned(
-            right: 0,
-            bottom: 0,
-            child: SvgPicture.asset('assets/texture_login.svg'),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                margin: EdgeInsets.only(top: 78, left: 19, bottom: 31),
-                child: Row(
-                  children: [
-                    Container(
-                      height: 32,
-                      width: 32,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle, color: Color(0xFFFF7A00)),
-                      child: Icon(
-                        Icons.arrow_back,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 11,
-                    ),
-                    Text(
-                      'Log In',
-                      style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 23,
-                          fontWeight: FontWeight.w500),
-                    )
-                  ],
+          Container(
+            margin: EdgeInsets.only(top: 78, left: 19, bottom: 31),
+            child: Row(
+              children: [
+                Container(
+                  height: 32,
+                  width: 32,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle, color: Color(0xFFFF7A00)),
+                  child: Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-              Container(
-                width: 256,
-                height: 45,
-                decoration: BoxDecoration(
-                    color: Color(0xFF474747),
-                    borderRadius: BorderRadius.circular(10)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    GestureDetector(
-                      onTap: () async {
-                        await AuthService.googleSignIn(context);
-                        // var user = FirebaseAuth.instance.currentUser;
-                        // FirestoreService.addUserDataToFirestore(
-                        //     FirebaseAuth.instance.currentUser,
-                        //     UserData(
-                        //         name: user!.displayName!,
-                        //         email: user.email!,
-                        //         no: user.phoneNumber ?? '',
-                        //         imageUrl: user.photoURL!));
-                      },
-                      child: Container(
-                          height: 38,
-                          width: 121,
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                              color: Color(0xFF262626),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: SvgPicture.asset(
-                            'assets/google_logo.svg',
-                          )),
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        await AuthService.facebookSignIn(context).then((value) {
-                          // var user = FirebaseAuth.instance.currentUser;
-                          // FirestoreService.addUserDataToFirestore(
-                          //     FirebaseAuth.instance.currentUser,
-                          //     UserData(
-                          //         name: user!.displayName!,
-                          //         email: user.email!,
-                          //         no: user.phoneNumber!,
-                          //         imageUrl: user.photoURL!));
+                SizedBox(
+                  width: 11,
+                ),
+                Text(
+                  'Log In',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Poppins',
+                      fontSize: 23,
+                      fontWeight: FontWeight.w500),
+                )
+              ],
+            ),
+          ),
+          Container(
+            width: 256,
+            height: 45,
+            decoration: BoxDecoration(
+                color: Color(0xff575757),
+                borderRadius: BorderRadius.circular(10)),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                GestureDetector(
+                  onTap: () async {
+                    await AuthService.googleSignIn(context);
+                    //     .then((value) {
+                    //   var user = FirebaseAuth.instance.currentUser;
+                    //   FirestoreService.addUserDataToFirestore(
+                    //       FirebaseAuth.instance.currentUser,
+                    //       UserData(
+                    //           name: user!.displayName!,
+                    //           email: user.email!,
+                    //           no: user.phoneNumber!,
+                    //           imageUrl: user.photoURL!));
+                    // });
+                    // Navigator.pop(context);
+                  },
+                  child: Container(
+                      height: 45,
+                      width: 128,
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                          color: Color(0xFF262626),
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(10),
+                              topLeft: Radius.circular(10))),
+                      child: SvgPicture.asset(
+                        'assets/google_logo.svg',
+                      )),
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    await AuthService.facebookSignIn(context);
+                    //     .then((value) {
+                    //   var user = FirebaseAuth.instance.currentUser;
+                    //   FirestoreService.addUserDataToFirestore(
+                    //       FirebaseAuth.instance.currentUser,
+                    //       UserData(
+                    //           name: user!.displayName!,
+                    //           email: user.email!,
+                    //           no: user.phoneNumber!,
+                    //           imageUrl: user.photoURL!));
+                    // });
+                    // Navigator.pop(context);
+                  },
+                  child: Container(
+                      height: 45,
+                      width: 128,
+                      padding: EdgeInsets.all(10),
+                      child: SvgPicture.asset(
+                        'assets/facebook_logo.svg',
+                      )),
+                )
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 53,
+          ),
+          Form(
+              key: _key,
+              child: Column(
+                children: [
+                  _formField(_emailController, 'Email', _emailFieldFocus,
+                      _emailColor, false),
+                  SizedBox(
+                    height: 22,
+                  ),
+                  _formField(
+                    _passwordController,
+                    'Password',
+                    _passwordFieldFocus,
+                    _passwordColor,
+                    _obscureText,
+                    suffix: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
                         });
                       },
-                      child: Container(
-                          height: 38,
-                          width: 121,
-                          padding: EdgeInsets.all(8),
-                          child: SvgPicture.asset(
-                            'assets/facebook_logo.svg',
-                          )),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 53,
-              ),
-              Form(
-                  key: _key,
-                  child: Column(
-                    children: [
-                      _formField(_emailController, 'Email', _emailFieldFocus,
-                          _emailColor, false),
-                      SizedBox(
-                        height: 22,
-                      ),
-                      _formField(
-                        _passwordController,
-                        'Password',
-                        _passwordFieldFocus,
-                        _passwordColor,
-                        _obscureText,
-                        suffix: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _obscureText = !_obscureText;
-                            });
-                          },
-                          child: _obscureText
-                              ? Icon(
-                                  Icons.visibility_off_outlined,
-                                  color: Colors.white,
-                                  size: 18,
-                                )
-                              : Icon(
-                                  Icons.visibility_outlined,
-                                  color: Colors.white,
-                                  size: 18,
-                                ),
-                        ),
-                      ),
-                    ],
-                  )),
-              SizedBox(
-                height: 5,
-              ),
-              GestureDetector(
-                onTap: () {},
-                child: Container(
-                  width: 256,
-                  child: Text(
-                    'Forgot password?',
-                    textAlign: TextAlign.end,
-                    style: TextStyle(
-                        color: Color(0xFFA7A7A7),
-                        fontFamily: 'Poppins',
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500),
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () async {
-                  if (_key.currentState!.validate()) {
-                    try {
-                      await AuthService.signIn(
-                          _emailController.text, _passwordController.text);
-                    } on FirebaseAuthException catch (e) {
-                      if (e.code == 'wrong-password') {
-                        showDialog(
-                            context: context,
-                            builder: (context) => alertDialog(context,
-                                'Invalid Password', 'Wrong password or email'));
-                      } else if (e.code == 'invalid-email') {
-                        showDialog(
-                            context: context,
-                            builder: (context) => alertDialog(
-                                context,
-                                'Invalid Email',
-                                'Please try again with the correct email!'));
-                      } else if (e.code == 'user-not-found') {
-                        showDialog(
-                            context: context,
-                            builder: (context) => alertDialog(
-                                context,
-                                'User Not Found',
-                                'Email that you use not registered yet. Try to sign up first'));
-                      }
-                    } catch (e) {
-                      print(e.toString());
-                    }
-
-                    print('sukses');
-                  }
-                },
-                child: Container(
-                  height: 36,
-                  width: 256,
-                  margin: EdgeInsets.only(top: 44, bottom: 20),
-                  decoration: BoxDecoration(
-                      color: Color(0xFFFF7A00),
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black12.withOpacity(0.1),
-                            blurRadius: 15,
-                            spreadRadius: 1,
-                            offset: Offset(2, 5))
-                      ]),
-                  child: Center(
-                    child: Text(
-                      'Log in',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: 'Poppins'),
+                      child: _obscureText
+                          ? Icon(
+                              Icons.visibility_off_outlined,
+                              color: Colors.white,
+                              size: 18,
+                            )
+                          : Icon(
+                              Icons.visibility_outlined,
+                              color: Colors.white,
+                              size: 18,
+                            ),
                     ),
                   ),
+                ],
+              )),
+          SizedBox(
+            height: 5,
+          ),
+          GestureDetector(
+            onTap: () {},
+            child: Container(
+              width: 256,
+              child: Text(
+                'Forgot password?',
+                textAlign: TextAlign.end,
+                style: TextStyle(
+                    color: Color(0xFFA7A7A7),
+                    fontFamily: 'Poppins',
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () async {
+              if (_key.currentState!.validate()) {
+                try {
+                  await AuthService.signIn(
+                      _emailController.text, _passwordController.text);
+                } on FirebaseAuthException catch (e) {
+                  if (e.code == 'wrong-password') {
+                    showDialog(
+                        context: context,
+                        builder: (context) => alertDialog(context,
+                            'Invalid Password', 'Wrong password or email'));
+                  } else if (e.code == 'invalid-email') {
+                    showDialog(
+                        context: context,
+                        builder: (context) => alertDialog(
+                            context,
+                            'Invalid Email',
+                            'Please try again with the correct email!'));
+                  } else if (e.code == 'user-not-found') {
+                    showDialog(
+                        context: context,
+                        builder: (context) => alertDialog(
+                            context,
+                            'User Not Found',
+                            'Email that you use not registered yet. Try to sign up first'));
+                  }
+                } catch (e) {
+                  print(e.toString());
+                }
+
+                print('sukses');
+              }
+            },
+            child: Container(
+              height: 36,
+              width: 256,
+              margin: EdgeInsets.only(top: 44, bottom: 20),
+              decoration: BoxDecoration(
+                  color: Color(0xFFFF7A00),
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black12.withOpacity(0.1),
+                        blurRadius: 15,
+                        spreadRadius: 1,
+                        offset: Offset(2, 5))
+                  ]),
+              child: Center(
+                child: Text(
+                  'Log in',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Poppins'),
                 ),
               ),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Text('Dont have an account? ',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: 'Poppins',
-                        fontSize: 13,
-                        fontWeight: FontWeight.w400)),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return SignUpScreen();
-                    }));
-                    _emailController.text = '';
-                    _passwordController.text = '';
-                  },
-                  child: Text('Sign up',
-                      style: TextStyle(
-                          color: Color(0xFFFF7A00),
-                          fontWeight: FontWeight.w700)),
-                )
-              ])
-            ],
-          )
+            ),
+          ),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Text('Dont have an account? ',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Poppins',
+                    fontSize: 13,
+                    fontWeight: FontWeight.w400)),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return SignUpScreen();
+                }));
+                _emailController.text = '';
+                _passwordController.text = '';
+              },
+              child: Text('Sign up',
+                  style: TextStyle(
+                      color: Color(0xFFFF7A00), fontWeight: FontWeight.w700)),
+            )
+          ])
         ],
       ),
     );

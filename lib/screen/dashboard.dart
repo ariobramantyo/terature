@@ -6,6 +6,7 @@ import 'package:custom_check_box/custom_check_box.dart';
 import 'package:get/get.dart';
 import 'package:terature/controllers/calendar_controller.dart';
 import 'package:terature/controllers/dashboard_controller.dart';
+import 'package:terature/controllers/tab_bar_controller.dart';
 import 'package:terature/model/task.dart';
 import 'package:terature/services/firestore_service.dart';
 import 'package:intl/intl.dart';
@@ -22,6 +23,7 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
   final dashboardController = Get.put(DashboardController());
   final cldrController = Get.put(CalendarController());
+  final tabBarController = Get.put(TabBarController());
 
   TextStyle textStyle = TextStyle(
       fontFamily: 'Poppins', fontSize: 19, fontWeight: FontWeight.w500);
@@ -76,210 +78,408 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Color(0xff000000),
         body: Column(
-      children: [
-        //header
-        SafeArea(
-            child: Padding(
-          padding: EdgeInsets.only(left: 23, right: 28, top: 15),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(DateFormat('EEEE, d MMM').format(_focusedDay),
-                  style: textStyle),
-              Container(
-                height: 36,
-                width: 36,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                        begin: Alignment.topRight,
-                        end: Alignment.bottomLeft,
-                        colors: [Color(0xffFF6230), Color(0xffFF9330)])),
-                child: Icon(
-                  Icons.notifications_none_outlined,
-                  color: Colors.white,
-                ),
-              )
-            ],
-          ),
-        )),
-        SizedBox(height: 20),
-        CalendarTimeline(
-          initialDate: _focusedDay,
-          firstDate: DateTime.utc(2010, 10, 16),
-          lastDate: DateTime.utc(2030, 3, 14),
-          onDateSelected: (date) {
-            cldrController.onDateSelected(date!);
-            print(cldrController.dateNow);
-          },
-          leftMargin: 20,
-          // showYears: true,
-          monthColor: Colors.blueGrey,
-          dayColor: Colors.grey,
-          activeDayColor: Colors.white,
-          activeBackgroundDayColor: Color(0xffFFA726),
-          dotsColor: Color(0xFF333A47),
-          // selectableDayPredicate: (date) => date.day != 23,
-          locale: 'en_ISO',
-        ),
+          children: [
+            //header
+            SafeArea(
+                child: Padding(
+              padding: EdgeInsets.only(left: 23, right: 28, top: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    DateFormat('EEEE, d \nMMMM').format(_focusedDay),
+                    style: textStyle.copyWith(
+                        fontSize: 19,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white),
+                  ),
+                  Container(
+                    height: 47,
+                    width: 47,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.grey,
+                    ),
+                  )
+                ],
+              ),
+            )),
+            SizedBox(height: 19),
+            CalendarTimeline(
+              initialDate: _focusedDay,
+              firstDate: DateTime.utc(2010, 10, 16),
+              lastDate: DateTime.utc(2030, 3, 14),
+              onDateSelected: (date) {
+                cldrController.onDateSelected(date!);
+                print(cldrController.dateNow);
+              },
+              leftMargin: 20,
+              // showYears: true,
+              monthColor: Color(0xff7e7e7e),
+              dayColor: Color(0xff7e7e7e),
+              activeDayColor: Colors.white,
+              activeBackgroundDayColor: Color(0xffFF7C02),
+              dotsColor: Color(0xFF333A47),
+              // selectableDayPredicate: (date) => date.day != 23,
+              locale: 'en_ISO',
+            ),
 
-        SizedBox(height: 0),
+            SizedBox(height: 22),
 
-        Container(
-          height: 60,
-          margin: EdgeInsets.symmetric(horizontal: 20),
-          child: TabBar(
-            unselectedLabelColor: Colors.grey[400],
-            indicatorSize: TabBarIndicatorSize.label,
-            labelColor: Colors.amber,
-            labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-            indicator: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  width: 5,
-                  color: Colors.amber,
-                ),
+            // Container(
+            //   height: 60,
+            //   // margin: EdgeInsets.symmetric(horizontal: 20),
+            //   decoration: BoxDecoration(
+            //       color: Color(0xff353535),
+            //       borderRadius:
+            //           BorderRadius.vertical(top: Radius.circular(30))),
+            //   child: TabBar(
+            //     unselectedLabelColor: Colors.white,
+            //     indicatorSize: TabBarIndicatorSize.label,
+            //     labelColor: Colors.white,
+            //     labelStyle:
+            //         TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+            //     indicator: BoxDecoration(
+            //       border: Border(
+            //         bottom: BorderSide(
+            //           width: 5,
+            //           color: Colors.amber,
+            //         ),
+            //       ),
+            //     ),
+            //     controller: _tabController,
+            //     tabs: [
+            //       Tab(
+            //         child: Align(
+            //             alignment: Alignment.center,
+            //             child: Text(
+            //               'On going',
+            //             )),
+            //       ),
+            //       Tab(
+            //         child: Align(
+            //             alignment: Alignment.center,
+            //             child: Text(
+            //               'Completed',
+            //             )),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 16),
+              decoration: BoxDecoration(
+                color: Color(0xff353535),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Obx(() => GestureDetector(
+                        onTap: () {
+                          tabBarController.changeTabBar(0);
+                        },
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 150),
+                          height: 23,
+                          width: 97,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: tabBarController.tabBarSelected.value == 0
+                                ? Color(0xffFF7C02)
+                                : Colors.transparent,
+                          ),
+                          child: Center(
+                            child: Text(
+                              'On Going',
+                              style: textStyle.copyWith(
+                                fontSize: 13,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )),
+                  SizedBox(width: 19),
+                  Obx(() => GestureDetector(
+                        onTap: () {
+                          tabBarController.changeTabBar(1);
+                        },
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 150),
+                          height: 23,
+                          width: 97,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: tabBarController.tabBarSelected.value == 1
+                                ? Color(0xffFF7C02)
+                                : Colors.transparent,
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Completed',
+                              style: textStyle.copyWith(
+                                fontSize: 13,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ))
+                ],
               ),
             ),
-            controller: _tabController,
-            tabs: [
-              Tab(
-                child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'On going',
-                    )),
-              ),
-              Tab(
-                child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Completed',
-                    )),
-              ),
-            ],
-          ),
-        ),
-        Container(
-          width: double.infinity,
-          height: Get.height * 0.53,
-          // color: Colors.blueGrey,
-          child: TabBarView(
-            controller: _tabController,
-            children: [
-              Obx(
-                () => StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('user')
-                      .doc(FirebaseAuth.instance.currentUser!.uid)
-                      .collection(cldrController.dateNow.value)
-                      .where('isDone', isEqualTo: false)
-                      // .orderBy('jamDeadline')
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return ListView.builder(
-                        padding: EdgeInsets.only(top: 10),
-                        // shrinkWrap: true,
-                        // physics: ClampingScrollPhysics(),
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (context, index) {
-                          var task = Task.fromSnapshot(snapshot
-                                  .data!.docs[index]
-                              as QueryDocumentSnapshot<Map<String, dynamic>>);
-                          return Dismissible(
-                            key: UniqueKey(),
-                            onDismissed: (_) {
-                              FirestoreService.deleteTask(
-                                FirebaseAuth.instance.currentUser,
-                                cldrController.dateNow.value,
-                                snapshot.data!.docs[index].id,
+            Expanded(
+              child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  color: Color(0xff353535),
+                  child: Obx(() {
+                    return tabBarController.tabBarSelected.value == 0
+                        ? StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('user')
+                                .doc(FirebaseAuth.instance.currentUser!.uid)
+                                .collection(cldrController.dateNow.value)
+                                .where('isDone', isEqualTo: false)
+                                // .orderBy('jamDeadline')
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return ListView.builder(
+                                  padding: EdgeInsets.zero,
+                                  itemCount: snapshot.data!.docs.length,
+                                  itemBuilder: (context, index) {
+                                    var task = Task.fromSnapshot(
+                                        snapshot.data!.docs[index]
+                                            as QueryDocumentSnapshot<
+                                                Map<String, dynamic>>);
+                                    return Column(
+                                      children: [
+                                        Dismissible(
+                                          key: UniqueKey(),
+                                          background: Container(
+                                            color: Color(0xff353535),
+                                            child: Container(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                'completed',
+                                                style: textStyle.copyWith(
+                                                    fontSize: 13,
+                                                    color: Color(0xffFF7C02)),
+                                              ),
+                                            ),
+                                          ),
+                                          secondaryBackground: Container(
+                                            alignment: Alignment.centerRight,
+                                            child: Text('Delete',
+                                                style: textStyle.copyWith(
+                                                    fontSize: 13,
+                                                    color: Colors.white)),
+                                          ),
+                                          onDismissed: (direction) {
+                                            if (direction ==
+                                                DismissDirection.startToEnd) {
+                                              FirestoreService.checkTask(
+                                                  FirebaseAuth
+                                                      .instance.currentUser,
+                                                  cldrController.dateNow.value,
+                                                  snapshot.data!.docs[index].id,
+                                                  task);
+                                            } else {
+                                              FirestoreService.deleteTask(
+                                                FirebaseAuth
+                                                    .instance.currentUser,
+                                                cldrController.dateNow.value,
+                                                snapshot.data!.docs[index].id,
+                                              );
+                                              Get.snackbar(
+                                                  'Task berhasil dihapus',
+                                                  'task ${task.judul} telah dihapus dari daftar todo list anda',
+                                                  colorText: Colors.white);
+                                            }
+                                          },
+                                          child: Container(
+                                              width: double.infinity,
+                                              height: 50,
+                                              padding: EdgeInsets.only(
+                                                  left: 15, right: 10),
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color: Color(0xff636363)),
+                                              child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      task.judul,
+                                                      style: textStyle.copyWith(
+                                                          fontSize: 16,
+                                                          color: Colors.white),
+                                                    ),
+                                                    Text(
+                                                      task.jamDeadline,
+                                                      style: textStyle.copyWith(
+                                                          fontSize: 16,
+                                                          color: Color(
+                                                              0xffFF7C02)),
+                                                    ),
+                                                  ])
+                                              // checkboxTask(
+                                              //   task,
+                                              //   snapshot.data!.docs[index].id,
+                                              //   cldrController.dateNow.value,
+                                              // ),
+                                              ),
+                                        ),
+                                        SizedBox(height: 20),
+                                      ],
+                                    );
+                                  },
+                                );
+                              }
+                              return Center(
+                                child: CircularProgressIndicator(),
                               );
                             },
-                            child: Container(
-                              width: double.infinity,
-                              height: 50,
-                              padding: EdgeInsets.only(left: 15, right: 10),
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.amber[100]),
-                              child: checkboxTask(
-                                task,
-                                snapshot.data!.docs[index].id,
-                                cldrController.dateNow.value,
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    }
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  },
-                ),
-              ),
-              Obx(
-                () => StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('user')
-                      .doc(FirebaseAuth.instance.currentUser!.uid)
-                      .collection(cldrController.dateNow.value)
-                      .where('isDone', isEqualTo: true)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return ListView.builder(
-                        padding: EdgeInsets.only(top: 10),
-                        // shrinkWrap: true,
-                        // physics: ClampingScrollPhysics(),
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (context, index) {
-                          var task = Task.fromSnapshot(snapshot
-                                  .data!.docs[index]
-                              as QueryDocumentSnapshot<Map<String, dynamic>>);
-                          return Dismissible(
-                            key: UniqueKey(),
-                            onDismissed: (_) {
-                              FirestoreService.deleteTask(
-                                FirebaseAuth.instance.currentUser,
-                                cldrController.dateNow.value,
-                                snapshot.data!.docs[index].id,
+                          )
+                        : StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('user')
+                                .doc(FirebaseAuth.instance.currentUser!.uid)
+                                .collection(cldrController.dateNow.value)
+                                .where('isDone', isEqualTo: true)
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return ListView.builder(
+                                  padding: EdgeInsets.zero,
+                                  itemCount: snapshot.data!.docs.length,
+                                  itemBuilder: (context, index) {
+                                    var task = Task.fromSnapshot(
+                                        snapshot.data!.docs[index]
+                                            as QueryDocumentSnapshot<
+                                                Map<String, dynamic>>);
+                                    return Column(
+                                      children: [
+                                        Dismissible(
+                                          key: UniqueKey(),
+                                          background: Container(
+                                            color: Color(0xff353535),
+                                            child: Container(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                'Uncompleted',
+                                                style: textStyle.copyWith(
+                                                    fontSize: 13,
+                                                    color: Color(0xffFF7C02)),
+                                              ),
+                                            ),
+                                          ),
+                                          secondaryBackground: Container(
+                                            alignment: Alignment.centerRight,
+                                            child: Text('Delete',
+                                                style: textStyle.copyWith(
+                                                    fontSize: 13,
+                                                    color: Colors.white)),
+                                          ),
+                                          onDismissed: (direction) {
+                                            if (direction ==
+                                                DismissDirection.startToEnd) {
+                                              FirestoreService.checkTask(
+                                                  FirebaseAuth
+                                                      .instance.currentUser,
+                                                  cldrController.dateNow.value,
+                                                  snapshot.data!.docs[index].id,
+                                                  task);
+                                            } else {
+                                              FirestoreService.deleteTask(
+                                                FirebaseAuth
+                                                    .instance.currentUser,
+                                                cldrController.dateNow.value,
+                                                snapshot.data!.docs[index].id,
+                                              );
+                                              Get.snackbar(
+                                                  'Task berhasil dihapus',
+                                                  'task ${task.judul} telah dihapus dari daftar todo list anda',
+                                                  colorText: Colors.white);
+                                            }
+                                          },
+                                          child: Container(
+                                              width: double.infinity,
+                                              height: 50,
+                                              padding: EdgeInsets.only(
+                                                  left: 15, right: 10),
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color: Color(0xff636363)),
+                                              child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      task.judul,
+                                                      style: textStyle.copyWith(
+                                                          fontSize: 16,
+                                                          color: Colors.white),
+                                                    ),
+                                                    Text(
+                                                      task.jamDeadline,
+                                                      style: textStyle.copyWith(
+                                                          fontSize: 16,
+                                                          color: Color(
+                                                              0xffFF7C02)),
+                                                    ),
+                                                  ])
+
+                                              // checkboxTask(
+                                              //   task,
+                                              //   snapshot.data!.docs[index].id,
+                                              //   cldrController.dateNow.value,
+                                              // ),
+                                              ),
+                                        ),
+                                        SizedBox(height: 20),
+                                      ],
+                                    );
+                                  },
+                                );
+                              }
+                              return Center(
+                                child: CircularProgressIndicator(),
                               );
                             },
-                            child: Container(
-                              width: double.infinity,
-                              height: 50,
-                              padding: EdgeInsets.only(left: 15, right: 10),
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.amber[100]),
-                              child: checkboxTask(
-                                task,
-                                snapshot.data!.docs[index].id,
-                                cldrController.dateNow.value,
-                              ),
-                            ),
                           );
-                        },
-                      );
-                    }
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ));
+                  })
+                  // Obx(() {
+                  //   if (tabBarController.tabBarSelected.value == 0) {
+                  //     return
+                  //   } else {
+                  //     return
+                  //   }
+                  // })
+                  // TabBarView(
+                  //   controller: _tabController,
+                  //   children: [
+
+                  //     // Obx(
+                  //     //   () =>
+                  //     // ),
+                  //     // Obx(
+                  //     //   () =>
+                  //     // ),
+                  //   ],
+                  // ),
+                  ),
+            ),
+          ],
+        ));
   }
 }

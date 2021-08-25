@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:terature/model/task.dart';
 import 'package:terature/model/user.dart';
 
@@ -22,6 +25,10 @@ class FirestoreService {
           .collection(collection)
           .doc(docID)
           .update({'isDone': false});
+
+      Get.snackbar('Task kembali dikerjakan',
+          'task ${task.judul} dipindahkan ke dalam tab on going',
+          colorText: Colors.white);
     } else {
       FirebaseFirestore.instance
           .collection('user')
@@ -29,6 +36,10 @@ class FirestoreService {
           .collection(collection)
           .doc(docID)
           .update({'isDone': true});
+
+      Get.snackbar('Task selesai',
+          'task ${task.judul} dipindahkan ke dalam tab completed',
+          colorText: Colors.white);
     }
   }
 
