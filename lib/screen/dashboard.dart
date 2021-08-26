@@ -6,6 +6,7 @@ import 'package:custom_check_box/custom_check_box.dart';
 import 'package:get/get.dart';
 import 'package:terature/controllers/calendar_controller.dart';
 import 'package:terature/controllers/dashboard_controller.dart';
+import 'package:terature/controllers/logged_user_controller.dart';
 import 'package:terature/controllers/tab_bar_controller.dart';
 import 'package:terature/model/task.dart';
 import 'package:terature/services/firestore_service.dart';
@@ -24,6 +25,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
   final dashboardController = Get.put(DashboardController());
   final cldrController = Get.put(CalendarController());
   final tabBarController = Get.put(TabBarController());
+  final userController = Get.find<UserController>();
 
   TextStyle textStyle = TextStyle(
       fontFamily: 'Poppins', fontSize: 19, fontWeight: FontWeight.w500);
@@ -96,14 +98,29 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                         fontWeight: FontWeight.w500,
                         color: Colors.white),
                   ),
-                  Container(
-                    height: 47,
-                    width: 47,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.grey,
-                    ),
-                  )
+                  Obx(() => Container(
+                        height: 47,
+                        width: 47,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0xff353535),
+                        ),
+                        child: userController.loggedUser.value.imageUrl == ''
+                            ? Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Icon(
+                                  Icons.person,
+                                  size: 47,
+                                ),
+                              )
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: Image.network(
+                                    userController.loggedUser.value.imageUrl ??
+                                        'https://ppa-feui.com/wp-content/uploads/2013/01/nopict-300x300.png',
+                                    fit: BoxFit.fill),
+                              ),
+                      ))
                 ],
               ),
             )),
@@ -123,7 +140,6 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
               activeDayColor: Colors.white,
               activeBackgroundDayColor: Color(0xffFF7C02),
               dotsColor: Color(0xFF333A47),
-              // selectableDayPredicate: (date) => date.day != 23,
               locale: 'en_ISO',
             ),
 

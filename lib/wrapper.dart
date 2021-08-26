@@ -1,11 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:terature/controllers/logged_user_controller.dart';
 import 'package:terature/screen/home_screen.dart';
 import 'package:terature/screen/login_screen.dart';
 import 'package:terature/services/auth_service.dart';
 
 class Wrapper extends StatelessWidget {
-  const Wrapper({Key? key}) : super(key: key);
+  Wrapper({Key? key}) : super(key: key);
+
+  final userController = Get.put(UserController());
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +17,8 @@ class Wrapper extends StatelessWidget {
       stream: AuthService.firebaseUserStream,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          User? user = snapshot.data;
           return HomeScreen(
-            user: user,
+            user: snapshot.data,
           );
         }
         return LoginScreen();

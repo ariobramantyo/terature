@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:terature/screen/sign_up_screen.dart';
 import 'package:terature/services/auth_service.dart';
+import 'package:terature/services/firestore_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -259,7 +260,9 @@ class _LoginScreenState extends State<LoginScreen> {
               if (_key.currentState!.validate()) {
                 try {
                   await AuthService.signIn(
-                      _emailController.text, _passwordController.text);
+                          _emailController.text, _passwordController.text)
+                      .then((value) =>
+                          FirestoreService.addUserDataToFirestore(value));
                 } on FirebaseAuthException catch (e) {
                   if (e.code == 'wrong-password') {
                     showDialog(

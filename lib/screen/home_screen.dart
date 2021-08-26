@@ -12,6 +12,7 @@ class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key, required this.user}) : super(key: key);
 
   final PageStorageBucket bucket = PageStorageBucket();
+
   final navController = Get.put(NavBarController());
 
   List screens = [

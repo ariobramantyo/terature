@@ -2,8 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:terature/model/user.dart';
 import 'package:terature/screen/login_screen.dart';
 import 'package:terature/services/auth_service.dart';
+import 'package:terature/services/firestore_service.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -305,8 +307,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   onTap: () async {
                     if (_key.currentState!.validate()) {
                       try {
+                        print('sign up');
                         await AuthService.signUp(
-                            _emailController.text, _passwordController.text);
+                                _emailController.text, _passwordController.text)
+                            .then(
+                          (value) => FirestoreService.addUserDataToFirestore(
+                            value,
+                            userData: UserData(
+                              name: _namaController.text,
+                              email: _emailController.text,
+                              no: _noController.text,
+                            ),
+                          ),
+                        );
+
                         // .then((value) {
                         // var user = FirebaseAuth.instance.currentUser;
                         // FirestoreService.addUserDataToFirestore(

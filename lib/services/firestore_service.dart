@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:terature/controllers/logged_user_controller.dart';
 import 'package:terature/model/task.dart';
 import 'package:terature/model/user.dart';
+
+final userController = Get.find<UserController>();
 
 class FirestoreService {
   static void addTask(User? user, Task task, String docId) {
@@ -52,22 +53,58 @@ class FirestoreService {
         .delete();
   }
 
-  static void addUserDataToFirestore(User? user, UserData userData) {
-    FirebaseFirestore.instance
+  static Future<void> addUserDataToFirestore(User? user,
+      {UserData? userData}) async {
+    final checkUser = await FirebaseFirestore.instance
         .collection('user')
         .doc(user!.uid)
-        .collection('userData')
-        .where('email', isEqualTo: user.email)
-        .get()
-        .then((value) {
-      print('masuk');
-      if (!value.docs.first.exists) {
-        FirebaseFirestore.instance
+        .get();
+
+    if (checkUser.data() == null) {
+      print('user belum dibuat');
+      if (userData != null) {
+        await FirebaseFirestore.instance
             .collection('user')
             .doc(user.uid)
-            .collection('userData')
-            .add(userData.toMap());
+            .set(userData.toMap());
+        print('masuk if');
+      } else {
+        await FirebaseFirestore.instance.collection('user').doc(user.uid).set({
+          'name': user.displayName,
+          'email': user.email,
+          'no': user.phoneNumber ?? '',
+          'imageUrl': user.photoURL ?? '',
+        });
+        print('masuk else');
       }
-    });
+    }
+
+    final currentUser =
+        await FirebaseFirestore.instance.collection('user').doc(user.uid).get();
+
+    final currentUserData = currentUser.data() as Map<String, dynamic>;
+
+    userController.loggedUser.value = UserData(
+        name: currentUserData['name'],
+        email: currentUserData['email'],
+        no: currentUserData['no'],
+        imageUrl: currentUserData['imageUrl']);
+  }
+
+  static Future<void> getUserDataFromFirebase(User? user) async {
+    if (user != null) {
+      final currentUser = await FirebaseFirestore.instance
+          .collection('user')
+          .doc(user.uid)
+          .get();
+
+      final currentUserData = currentUser.data() as Map<String, dynamic>;
+
+      userController.loggedUser.value = UserData(
+          name: currentUserData['name'],
+          email: currentUserData['email'],
+          no: currentUserData['no'],
+          imageUrl: currentUserData['imageUrl']);
+    }
   }
 }

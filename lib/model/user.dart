@@ -1,14 +1,10 @@
 class UserData {
-  String name;
-  String email;
-  String no;
-  String imageUrl;
+  String? name;
+  String? email;
+  String? no;
+  String? imageUrl;
 
-  UserData(
-      {required this.name,
-      required this.email,
-      required this.no,
-      this.imageUrl = ''});
+  UserData({this.name, this.email, this.no, this.imageUrl = ''});
 
   Map<String, dynamic> toMap() => {
         'name': this.name,
