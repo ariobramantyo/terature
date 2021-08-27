@@ -5,6 +5,7 @@ import 'package:terature/controllers/logged_user_controller.dart';
 import 'package:terature/screen/home_screen.dart';
 import 'package:terature/screen/login_screen.dart';
 import 'package:terature/services/auth_service.dart';
+import 'package:terature/services/firestore_service.dart';
 
 class Wrapper extends StatelessWidget {
   Wrapper({Key? key}) : super(key: key);
@@ -17,6 +18,7 @@ class Wrapper extends StatelessWidget {
       stream: AuthService.firebaseUserStream,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          FirestoreService.getUserTaskFromFirebase(snapshot.data);
           return HomeScreen(
             user: snapshot.data,
           );

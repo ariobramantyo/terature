@@ -219,6 +219,7 @@ class AddTask extends StatelessWidget {
                                   fontFamily: 'Poppins',
                                   color: Color(0xffFF810C))),
                           onConfirm: (date) {
+                            sheetController.dateSubmit.value = date.toString();
                             sheetController.onTimeSubmit(date.toString());
                             print('time $date');
                           },
@@ -260,8 +261,7 @@ class AddTask extends StatelessWidget {
                                   tanggalDeadline:
                                       sheetController.dateSubmit.value,
                                   jamDeadline: sheetController.timeSubmit.value,
-                                  dateTime: DateTime.now().toString()),
-                              cldrController.dateNow.value,
+                                  tanggalDibuat: cldrController.dateNow.value),
                             );
                           }
 

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:terature/controllers/logged_user_controller.dart';
 import 'package:terature/model/task.dart';
@@ -9,21 +10,22 @@ import 'package:terature/model/user.dart';
 final userController = Get.find<UserController>();
 
 class FirestoreService {
-  static void addTask(User? user, Task task, String docId) {
+  static void addTask(User? user, Task task) {
     FirebaseFirestore.instance
         .collection('user')
         .doc(user!.uid)
-        .collection(docId)
+        .collection('task')
         .add(task.toMap());
   }
 
   static void checkTask(
       User? user, String collection, String docID, Task task) {
+    print(docID);
     if (task.isDone) {
       FirebaseFirestore.instance
           .collection('user')
           .doc(user!.uid)
-          .collection(collection)
+          .collection('task')
           .doc(docID)
           .update({'isDone': false});
 
@@ -34,7 +36,7 @@ class FirestoreService {
       FirebaseFirestore.instance
           .collection('user')
           .doc(user!.uid)
-          .collection(collection)
+          .collection('task')
           .doc(docID)
           .update({'isDone': true});
 
@@ -48,7 +50,7 @@ class FirestoreService {
     FirebaseFirestore.instance
         .collection('user')
         .doc(user!.uid)
-        .collection(collection)
+        .collection('task')
         .doc(docId)
         .delete();
   }
@@ -79,16 +81,18 @@ class FirestoreService {
       }
     }
 
-    final currentUser =
-        await FirebaseFirestore.instance.collection('user').doc(user.uid).get();
+    await getUserDataFromFirebase(user);
 
-    final currentUserData = currentUser.data() as Map<String, dynamic>;
+    // final currentUser =
+    //     await FirebaseFirestore.instance.collection('user').doc(user.uid).get();
 
-    userController.loggedUser.value = UserData(
-        name: currentUserData['name'],
-        email: currentUserData['email'],
-        no: currentUserData['no'],
-        imageUrl: currentUserData['imageUrl']);
+    // final currentUserData = currentUser.data() as Map<String, dynamic>;
+
+    // userController.loggedUser.value = UserData(
+    //     name: currentUserData['name'],
+    //     email: currentUserData['email'],
+    //     no: currentUserData['no'],
+    //     imageUrl: currentUserData['imageUrl']);
   }
 
   static Future<void> getUserDataFromFirebase(User? user) async {
@@ -105,6 +109,23 @@ class FirestoreService {
           email: currentUserData['email'],
           no: currentUserData['no'],
           imageUrl: currentUserData['imageUrl']);
+    }
+  }
+
+  static Future<void> getUserTaskFromFirebase(User? user) async {
+    if (user != null) {
+      final taskList = await FirebaseFirestore.instance
+          .collection('user')
+          .doc(user.uid)
+          .collection('task')
+          .get();
+
+      final taskListData =
+          taskList.docs.map((data) => Task.fromSnapshot(data)).toList();
+
+      userController.userTask.value.addAll(taskListData);
+      userController.userTask.refresh();
+      print('usertask');
     }
   }
 }

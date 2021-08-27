@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:custom_check_box/custom_check_box.dart';
 import 'package:get/get.dart';
 import 'package:terature/controllers/calendar_controller.dart';
-import 'package:terature/controllers/dashboard_controller.dart';
 import 'package:terature/controllers/logged_user_controller.dart';
 import 'package:terature/controllers/tab_bar_controller.dart';
 import 'package:terature/model/task.dart';
@@ -22,7 +21,6 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
-  final dashboardController = Get.put(DashboardController());
   final cldrController = Get.put(CalendarController());
   final tabBarController = Get.put(TabBarController());
   final userController = Get.find<UserController>();
@@ -198,6 +196,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                   Obx(() => GestureDetector(
                         onTap: () {
                           tabBarController.changeTabBar(0);
+                          print(userController.userTask);
                         },
                         child: AnimatedContainer(
                           duration: Duration(milliseconds: 150),
@@ -224,6 +223,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                   Obx(() => GestureDetector(
                         onTap: () {
                           tabBarController.changeTabBar(1);
+                          print(userController.userTask);
                         },
                         child: AnimatedContainer(
                           duration: Duration(milliseconds: 150),
@@ -259,8 +259,10 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                             stream: FirebaseFirestore.instance
                                 .collection('user')
                                 .doc(FirebaseAuth.instance.currentUser!.uid)
-                                .collection(cldrController.dateNow.value)
+                                .collection('task')
                                 .where('isDone', isEqualTo: false)
+                                .where('tanggalDibuat',
+                                    isEqualTo: cldrController.dateNow.value)
                                 // .orderBy('jamDeadline')
                                 .snapshots(),
                             builder: (context, snapshot) {
@@ -368,8 +370,10 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                             stream: FirebaseFirestore.instance
                                 .collection('user')
                                 .doc(FirebaseAuth.instance.currentUser!.uid)
-                                .collection(cldrController.dateNow.value)
+                                .collection('task')
                                 .where('isDone', isEqualTo: true)
+                                .where('tanggalDibuat',
+                                    isEqualTo: cldrController.dateNow.value)
                                 .snapshots(),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {

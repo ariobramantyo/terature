@@ -5,14 +5,14 @@ class Task {
   String tanggalDeadline;
   String jamDeadline;
   bool isDone;
-  String dateTime;
+  String tanggalDibuat;
 
   Task({
     required this.judul,
     required this.tanggalDeadline,
     required this.jamDeadline,
     this.isDone = false,
-    required this.dateTime,
+    required this.tanggalDibuat,
   });
 
   factory Task.fromSnapshot(QueryDocumentSnapshot<Map<String, dynamic>>? map) {
@@ -21,7 +21,7 @@ class Task {
       tanggalDeadline: map['tanggalDeadline'],
       jamDeadline: map['jamDeadline'],
       isDone: map['isDone'],
-      dateTime: map['dateTime'],
+      tanggalDibuat: map['tanggalDibuat'],
     );
   }
 
@@ -30,6 +30,6 @@ class Task {
         'tanggalDeadline': this.tanggalDeadline,
         'jamDeadline': this.jamDeadline,
         'isDone': this.isDone,
-        'dateTime': this.dateTime,
+        'tanggalDibuat': this.tanggalDibuat,
       };
 }
