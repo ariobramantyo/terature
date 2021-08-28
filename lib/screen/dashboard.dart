@@ -10,6 +10,8 @@ import 'package:terature/controllers/tab_bar_controller.dart';
 import 'package:terature/model/task.dart';
 import 'package:terature/services/firestore_service.dart';
 import 'package:intl/intl.dart';
+import 'package:terature/services/notification.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 class Dashboard extends StatefulWidget {
   // Dashboard({Key? key}) : super(key: key);
@@ -67,6 +69,8 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    tz.initializeTimeZones();
+    NotificationService.initialize();
   }
 
   @override
@@ -307,6 +311,11 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                                                   cldrController.dateNow.value,
                                                   snapshot.data!.docs[index].id,
                                                   task);
+
+                                              //hapus notifikasi task yang diselesaikan
+                                              NotificationService
+                                                  .cancelNotificationById(
+                                                      task.id);
                                             } else {
                                               FirestoreService.deleteTask(
                                                 FirebaseAuth
@@ -314,6 +323,12 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                                                 cldrController.dateNow.value,
                                                 snapshot.data!.docs[index].id,
                                               );
+
+                                              //hapus notofikasi task yang dihapus
+                                              NotificationService
+                                                  .cancelNotificationById(
+                                                      task.id);
+
                                               Get.snackbar(
                                                   'Task berhasil dihapus',
                                                   'task ${task.judul} telah dihapus dari daftar todo list anda',
@@ -417,6 +432,11 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                                                   cldrController.dateNow.value,
                                                   snapshot.data!.docs[index].id,
                                                   task);
+
+                                              //mengaktifkan kembali notifikasi dari task yang kembali dikerjakan
+                                              NotificationService
+                                                  .showScheduleNotification(
+                                                      task, 'terature');
                                             } else {
                                               FirestoreService.deleteTask(
                                                 FirebaseAuth
@@ -424,6 +444,12 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
                                                 cldrController.dateNow.value,
                                                 snapshot.data!.docs[index].id,
                                               );
+
+                                              //hapus notofikasi task yang dihapus
+                                              NotificationService
+                                                  .cancelNotificationById(
+                                                      task.id);
+
                                               Get.snackbar(
                                                   'Task berhasil dihapus',
                                                   'task ${task.judul} telah dihapus dari daftar todo list anda',

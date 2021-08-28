@@ -18,7 +18,9 @@ class Wrapper extends StatelessWidget {
       stream: AuthService.firebaseUserStream,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          FirestoreService.getUserTaskFromFirebase(snapshot.data);
+          //mengambil user data dan semua task user yang sedang login dari firestore, serta menset isLoggedIn menjadi true
+          FirestoreService.firstInitializationAfterLogin(snapshot.data);
+
           return HomeScreen(
             user: snapshot.data,
           );

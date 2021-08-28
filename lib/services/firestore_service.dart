@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:terature/controllers/logged_user_controller.dart';
 import 'package:terature/model/task.dart';
 import 'package:terature/model/user.dart';
+import 'package:terature/services/notification.dart';
 
 final userController = Get.find<UserController>();
 
@@ -69,7 +70,6 @@ class FirestoreService {
             .collection('user')
             .doc(user.uid)
             .set(userData.toMap());
-        print('masuk if');
       } else {
         await FirebaseFirestore.instance.collection('user').doc(user.uid).set({
           'name': user.displayName,
@@ -77,7 +77,6 @@ class FirestoreService {
           'no': user.phoneNumber ?? '',
           'imageUrl': user.photoURL ?? '',
         });
-        print('masuk else');
       }
     }
 
@@ -112,7 +111,7 @@ class FirestoreService {
     }
   }
 
-  static Future<void> getUserTaskFromFirebase(User? user) async {
+  static Future<void> firstInitializationAfterLogin(User? user) async {
     if (user != null) {
       final taskList = await FirebaseFirestore.instance
           .collection('user')
@@ -125,7 +124,18 @@ class FirestoreService {
 
       userController.userTask.value.addAll(taskListData);
       userController.userTask.refresh();
-      print('usertask');
+
+      print('ambil semua task user dari firestore');
+
+      //set notifikasi
+      final box = GetStorage();
+      if (!box.read('isLoggedIn')) {
+        await NotificationService.setNotificationFromAllUsersTask(
+            userController.userTask);
+      }
+
+      //menyimpan status user logged in menjadi true setelah login
+      box.write('isLoggedIn', true);
     }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Task {
+  int id;
   String judul;
   String tanggalDeadline;
   String jamDeadline;
@@ -8,6 +9,7 @@ class Task {
   String tanggalDibuat;
 
   Task({
+    required this.id,
     required this.judul,
     required this.tanggalDeadline,
     required this.jamDeadline,
@@ -17,7 +19,8 @@ class Task {
 
   factory Task.fromSnapshot(QueryDocumentSnapshot<Map<String, dynamic>>? map) {
     return Task(
-      judul: map!['judul'],
+      id: map!['id'],
+      judul: map['judul'],
       tanggalDeadline: map['tanggalDeadline'],
       jamDeadline: map['jamDeadline'],
       isDone: map['isDone'],
@@ -26,6 +29,7 @@ class Task {
   }
 
   Map<String, dynamic> toMap() => {
+        'id': this.id,
         'judul': this.judul,
         'tanggalDeadline': this.tanggalDeadline,
         'jamDeadline': this.jamDeadline,

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:terature/controllers/bottom_sheet.dart';
 import 'package:terature/controllers/calendar_controller.dart';
 import 'package:terature/model/task.dart';
 import 'package:terature/services/firestore_service.dart';
+import 'package:terature/services/notification.dart';
 
 class AddTask extends StatelessWidget {
   // AddTask({Key? key}) : super(key: key);
@@ -253,22 +256,43 @@ class AddTask extends StatelessWidget {
                       onPressed: () {
                         if (sheetController.timeSubmit.value != 'Jam' &&
                             sheetController.taskController.text != '') {
-                          if (sheetController.isKeseharian.value) {
+                          if (DateTime.parse(sheetController.dateSubmit.value)
+                              .isAfter(DateTime.now())) {
+                            var task = Task(
+                              id: Random().nextInt(10000),
+                              judul: sheetController.taskController.text,
+                              tanggalDeadline: sheetController.dateSubmit.value,
+                              jamDeadline: sheetController.timeSubmit.value,
+                              tanggalDibuat: cldrController.dateNow.value,
+                            );
+
                             FirestoreService.addTask(
                               FirebaseAuth.instance.currentUser,
-                              Task(
-                                  judul: sheetController.taskController.text,
-                                  tanggalDeadline:
-                                      sheetController.dateSubmit.value,
-                                  jamDeadline: sheetController.timeSubmit.value,
-                                  tanggalDibuat: cldrController.dateNow.value),
+                              task,
+                            );
+
+                            NotificationService.showScheduleNotification(
+                                task, 'terature');
+
+                            Get.back();
+                          } else {
+                            Get.defaultDialog(
+                              title: 'Error',
+                              middleText:
+                                  'Jam deadline harus berupa jam dimasa mendatang. Cobalah masukkan jam deadline yang valid',
+                              textCancel: 'kembali',
+                              onCancel: () => Get.back(),
+                              backgroundColor: Color(0xff353535),
+                              cancelTextColor: Color(0xffFF7C02),
+                              buttonColor: Color(0xffFF7C02),
+                              titleStyle: TextStyle(color: Colors.white),
+                              middleTextStyle: TextStyle(color: Colors.white),
                             );
                           }
 
                           sheetController.dateSubmit.value = 'Tanggal';
                           sheetController.timeSubmit.value = 'Jam';
                           sheetController.taskController.text = '';
-                          Get.back();
                         }
                       },
                       style: ElevatedButton.styleFrom(
