@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 class CalendarController extends GetxController {
   late CalendarController cldrController;
 
+  var calendarDateSelected = DateTime.now();
   var dateNow = DateTime.now().toString().substring(0, 10).obs;
 
   void onDateSelected(DateTime date) {

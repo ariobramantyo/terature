@@ -122,7 +122,7 @@ class FirestoreService {
       final taskListData =
           taskList.docs.map((data) => Task.fromSnapshot(data)).toList();
 
-      userController.userTask.value.addAll(taskListData);
+      userController.userTask.addAll(taskListData);
       userController.userTask.refresh();
 
       print('ambil semua task user dari firestore');
@@ -130,12 +130,24 @@ class FirestoreService {
       //set notifikasi
       final box = GetStorage();
       if (!box.read('isLoggedIn')) {
-        await NotificationService.setNotificationFromAllUsersTask(
-            userController.userTask);
+        //cek apakah user sebelumnya log out, jika ya maka akan diset semua notifikasi berdasarkan semua task
+        if (box.read('allowNotification')) {
+          //cek apakah user mengaktifkan notifikasi atau tidak
+          await NotificationService.setNotificationFromAllUsersTask(
+              userController.userTask);
+        }
       }
 
       //menyimpan status user logged in menjadi true setelah login
       box.write('isLoggedIn', true);
     }
+  }
+
+  static Future<void> updateData(
+      User? user, String newData, String type) async {
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(user!.uid)
+        .update({type: newData});
   }
 }

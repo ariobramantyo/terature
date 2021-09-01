@@ -128,11 +128,12 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin {
             )),
             SizedBox(height: 19),
             CalendarTimeline(
-              initialDate: _focusedDay,
+              initialDate: cldrController.calendarDateSelected,
               firstDate: DateTime.utc(2010, 10, 16),
               lastDate: DateTime.utc(2030, 3, 14),
               onDateSelected: (date) {
-                cldrController.onDateSelected(date!);
+                cldrController.calendarDateSelected = date!;
+                cldrController.onDateSelected(date);
                 print(cldrController.dateNow);
               },
               leftMargin: 20,

@@ -1,4 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:terature/model/task.dart';
 import 'package:timezone/timezone.dart' as tz;
 
@@ -42,7 +43,9 @@ class NotificationService {
   }
 
   static void showScheduleNotification(Task task, String payload) async {
-    if (DateTime.parse(task.tanggalDeadline).isAfter(DateTime.now())) {
+    final box = GetStorage();
+    if (DateTime.parse(task.tanggalDeadline).isAfter(DateTime.now()) &&
+        box.read('allowNotification')) {
       return _notification.zonedSchedule(
           task.id,
           'terature',

@@ -230,7 +230,7 @@ class AddTask extends StatelessWidget {
                       },
                       child: Obx(() => Container(
                             height: 36,
-                            width: 100,
+                            width: double.infinity,
                             padding: EdgeInsets.symmetric(horizontal: 10),
                             decoration: BoxDecoration(
                                 color: Color(0xff636363),
