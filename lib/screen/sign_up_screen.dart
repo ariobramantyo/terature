@@ -314,6 +314,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           (value) => FirestoreService.addUserDataToFirestore(
                             value,
                             userData: UserData(
+                              uid: value!.uid,
                               name: _namaController.text,
                               email: _emailController.text,
                               no: _noController.text,

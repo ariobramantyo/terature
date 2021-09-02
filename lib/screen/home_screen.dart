@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:terature/controllers/navbar_controller.dart';
 import 'package:terature/screen/dashboard.dart';
-import 'package:terature/screen/profile.dart';
 import 'package:terature/screen/settings.dart';
 import 'package:terature/screen/widgets/add_task.dart';
 
@@ -18,7 +17,6 @@ class HomeScreen extends StatelessWidget {
   List screens = [
     Dashboard(),
     Settings(),
-    Profile(),
   ];
 
   @override
@@ -131,33 +129,6 @@ class HomeScreen extends StatelessWidget {
                             ))
                       ],
                     )),
-                // MaterialButton(
-                //     minWidth: 40,
-                //     onPressed: () {
-                //       navController.pageChange(2);
-                //     },
-                //     child: Column(
-                //       mainAxisSize: MainAxisSize.min,
-                //       children: [
-                //         SizedBox(height: 10),
-                //         Icon(
-                //           Icons.person,
-                //           color: Colors.white,
-                //           size: 26,
-                //         ),
-                //         SizedBox(height: 5),
-                //         Obx(() => Container(
-                //               height: 5,
-                //               width: 5,
-                //               decoration: BoxDecoration(
-                //                 shape: BoxShape.circle,
-                //                 color: navController.currentTab.value == 2
-                //                     ? Colors.white
-                //                     : Colors.transparent,
-                //               ),
-                //             ))
-                //       ],
-                //     )),
               ],
             ),
           ),
@@ -165,25 +136,6 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Obx(() => PageStorage(
           bucket: bucket, child: screens[navController.currentTab.value])),
-      // body: (user!.displayName == null)
-      //     ? FutureBuilder<QuerySnapshot>(
-      //         future: FirebaseFirestore.instance
-      //             .collection('user')
-      //             .doc(user!.uid)
-      //             .collection('data')
-      //             .get(),
-      //         builder: (context, snapshot) {
-      //           if (snapshot.hasData) {
-      //             return Center(
-      //               child: Text(snapshot.data!.docs[0]['name']),
-      //             );
-      //           }
-      //           return Center(child: CircularProgressIndicator());
-      //         },
-      //       )
-      //     : Center(
-      //         child: Text(user!.displayName ?? ''),
-      //       ),
     );
   }
 }

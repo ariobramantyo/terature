@@ -104,6 +104,7 @@ class Settings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('uid : ${FirebaseAuth.instance.currentUser!.uid}');
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -134,8 +135,7 @@ class Settings extends StatelessWidget {
                             color: Color(0xff353535),
                           ),
                           child: userController.loggedUser.value.imageUrl == ''
-                              ? Align(
-                                  alignment: Alignment.bottomCenter,
+                              ? Center(
                                   child: Icon(
                                     Icons.person,
                                     size: 47,
@@ -156,9 +156,10 @@ class Settings extends StatelessWidget {
                         right: -6,
                         child: GestureDetector(
                           onTap: () async {
-                            var user = FirebaseAuth.instance.currentUser;
+                            // var user = FirebaseAuth.instance.currentUser;
                             await editDataController
-                                .updateUserPhoto(user)
+                                .updateUserPhoto(
+                                    userController.loggedUser.value.uid!)
                                 .then((imageUrl) {
                               if (imageUrl != '') {
                                 userController.loggedUser.update(
@@ -168,7 +169,8 @@ class Settings extends StatelessWidget {
                                 );
                                 userController.loggedUser.refresh();
                                 FirestoreService.updateUserPhoto(
-                                    user, imageUrl);
+                                    userController.loggedUser.value.uid!,
+                                    imageUrl);
                               }
                             });
                           },

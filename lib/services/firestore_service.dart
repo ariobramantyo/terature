@@ -64,7 +64,6 @@ class FirestoreService {
         .get();
 
     if (checkUser.data() == null) {
-      print('user belum dibuat');
       if (userData != null) {
         await FirebaseFirestore.instance
             .collection('user')
@@ -72,6 +71,7 @@ class FirestoreService {
             .set(userData.toMap());
       } else {
         await FirebaseFirestore.instance.collection('user').doc(user.uid).set({
+          'uid': user.uid,
           'name': user.displayName,
           'email': user.email,
           'no': user.phoneNumber ?? '',
@@ -104,6 +104,7 @@ class FirestoreService {
       final currentUserData = currentUser.data() as Map<String, dynamic>;
 
       userController.loggedUser.value = UserData(
+          uid: currentUserData['uid'],
           name: currentUserData['name'],
           email: currentUserData['email'],
           no: currentUserData['no'],
@@ -127,7 +128,6 @@ class FirestoreService {
 
       print('ambil semua task user dari firestore');
 
-      //set notifikasi
       final box = GetStorage();
 
       if (box.read('isLoggedIn') != null) {
@@ -152,17 +152,17 @@ class FirestoreService {
   }
 
   static Future<void> updateData(
-      User? user, String newData, String type) async {
+      String uid, String newData, String type) async {
     FirebaseFirestore.instance
         .collection('user')
-        .doc(user!.uid)
+        .doc(uid)
         .update({type: newData});
   }
 
-  static Future<void> updateUserPhoto(User? user, String imageUrl) async {
+  static Future<void> updateUserPhoto(String uid, String imageUrl) async {
     await FirebaseFirestore.instance
         .collection('user')
-        .doc(user!.uid)
+        .doc(uid)
         .update({'imageUrl': imageUrl});
   }
 }

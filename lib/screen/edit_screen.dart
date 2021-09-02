@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:terature/controllers/edit_data_controlller.dart';
@@ -57,7 +56,7 @@ class EditScreen extends StatelessWidget {
                   if (editDataController.editDataController.text != '') {
                     if (type == 'Name') {
                       await FirestoreService.updateData(
-                          FirebaseAuth.instance.currentUser,
+                          userController.loggedUser.value.uid!,
                           editDataController.editDataController.text,
                           'name');
                       userController.loggedUser.update((user) {
@@ -85,7 +84,7 @@ class EditScreen extends StatelessWidget {
                             colorText: Colors.white);
                       } else {
                         await FirestoreService.updateData(
-                            FirebaseAuth.instance.currentUser,
+                            userController.loggedUser.value.uid!,
                             editDataController.editDataController.text,
                             'no');
 

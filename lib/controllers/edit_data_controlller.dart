@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -61,7 +60,7 @@ class EditDataController extends GetxController {
     }
   }
 
-  Future<String> updateUserPhoto(User? user) async {
+  Future<String> updateUserPhoto(String uid) async {
     await getImageFromGallery();
 
     var result = '';
@@ -74,7 +73,7 @@ class EditDataController extends GetxController {
         Get.back();
       },
       onConfirm: () async {
-        result = await uploadImage(user!.uid);
+        result = await uploadImage(uid);
         Get.back();
       },
     );
