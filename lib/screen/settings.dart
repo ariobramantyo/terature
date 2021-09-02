@@ -2,18 +2,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:terature/controllers/edit_data_controlller.dart';
 import 'package:terature/controllers/logged_user_controller.dart';
 import 'package:terature/controllers/navbar_controller.dart';
 import 'package:terature/controllers/notification_controller.dart';
 import 'package:terature/controllers/theme_controller.dart';
 import 'package:terature/screen/edit_screen.dart';
 import 'package:terature/services/auth_service.dart';
+import 'package:terature/services/firestore_service.dart';
 import 'package:terature/services/notification.dart';
 
 class Settings extends StatelessWidget {
   Settings({Key? key}) : super(key: key);
 
   final notificationController = Get.put(NotificationController());
+  final editDataController = Get.put(EditDataController());
   final userController = Get.find<UserController>();
   final navBarController = Get.find<NavBarController>();
   final themeController = Get.find<AppTheme>();
@@ -42,14 +45,14 @@ class Settings extends StatelessWidget {
     final box = GetStorage();
     box.write('isLoggedIn', false);
 
-    //menset navbar menjadi 1(home) kembali
-    navBarController.currentTab.value = 0;
-
     //membatalkan smeua notifikasi
     await NotificationService.cancelAllNotifications();
 
     //autentifikasi log out
     await AuthService.signOut();
+
+    //menset navbar menjadi 0(home) kembali
+    navBarController.currentTab.value = 0;
   }
 
   Widget dataContainer(
@@ -122,34 +125,53 @@ class Settings extends StatelessWidget {
                   Stack(
                     alignment: Alignment.center,
                     children: [
-                      Container(
-                        height: 70,
-                        width: 70,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0xff353535),
-                        ),
-                        child: userController.loggedUser.value.imageUrl == ''
-                            ? Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Icon(
-                                  Icons.person,
-                                  size: 47,
+                      Obx(
+                        () => Container(
+                          height: 70,
+                          width: 70,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color(0xff353535),
+                          ),
+                          child: userController.loggedUser.value.imageUrl == ''
+                              ? Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Icon(
+                                    Icons.person,
+                                    size: 47,
+                                  ),
+                                )
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: Image.network(
+                                      userController
+                                              .loggedUser.value.imageUrl ??
+                                          'https://ppa-feui.com/wp-content/uploads/2013/01/nopict-300x300.png',
+                                      fit: BoxFit.fill),
                                 ),
-                              )
-                            : ClipRRect(
-                                borderRadius: BorderRadius.circular(100),
-                                child: Image.network(
-                                    userController.loggedUser.value.imageUrl ??
-                                        'https://ppa-feui.com/wp-content/uploads/2013/01/nopict-300x300.png',
-                                    fit: BoxFit.fill),
-                              ),
+                        ),
                       ),
                       Positioned(
                         bottom: -6,
                         right: -6,
                         child: GestureDetector(
-                          onTap: () {},
+                          onTap: () async {
+                            var user = FirebaseAuth.instance.currentUser;
+                            await editDataController
+                                .updateUserPhoto(user)
+                                .then((imageUrl) {
+                              if (imageUrl != '') {
+                                userController.loggedUser.update(
+                                  (user) {
+                                    user!.imageUrl = imageUrl;
+                                  },
+                                );
+                                userController.loggedUser.refresh();
+                                FirestoreService.updateUserPhoto(
+                                    user, imageUrl);
+                              }
+                            });
+                          },
                           child: Container(
                             height: 33,
                             width: 33,

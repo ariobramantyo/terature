@@ -14,7 +14,7 @@ class EditScreen extends StatelessWidget {
   TextStyle textStyle = TextStyle(
       fontFamily: 'Poppins', fontSize: 15, fontWeight: FontWeight.w500);
 
-  final editDataController = Get.put(EditDataController());
+  final editDataController = Get.find<EditDataController>();
 
   @override
   Widget build(BuildContext context) {

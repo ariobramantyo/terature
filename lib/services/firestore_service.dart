@@ -129,12 +129,20 @@ class FirestoreService {
 
       //set notifikasi
       final box = GetStorage();
-      if (!box.read('isLoggedIn')) {
-        //cek apakah user sebelumnya log out, jika ya maka akan diset semua notifikasi berdasarkan semua task
-        if (box.read('allowNotification')) {
-          //cek apakah user mengaktifkan notifikasi atau tidak
-          await NotificationService.setNotificationFromAllUsersTask(
-              userController.userTask);
+
+      if (box.read('isLoggedIn') != null) {
+        if (!box.read('isLoggedIn')) {
+          //cek apakah user sebelumnya log out, jika ya maka akan diset semua notifikasi berdasarkan semua task
+          if (box.read('allowNotification') != null) {
+            if (box.read('allowNotification')) {
+              //cek apakah user mengaktifkan notifikasi atau tidak
+              await NotificationService.setNotificationFromAllUsersTask(
+                  userController.userTask);
+            }
+          } else {
+            await NotificationService.setNotificationFromAllUsersTask(
+                userController.userTask);
+          }
         }
       }
 
@@ -149,5 +157,12 @@ class FirestoreService {
         .collection('user')
         .doc(user!.uid)
         .update({type: newData});
+  }
+
+  static Future<void> updateUserPhoto(User? user, String imageUrl) async {
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(user!.uid)
+        .update({'imageUrl': imageUrl});
   }
 }

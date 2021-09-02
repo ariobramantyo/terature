@@ -22,6 +22,8 @@ class NotificationController extends GetxController {
       } else {
         allowNotification.value = false;
       }
+    } else {
+      box.write('allowNotification', true);
     }
   }
 
