@@ -11,7 +11,7 @@ class NotificationService {
         FlutterLocalNotificationsPlugin();
 
     AndroidInitializationSettings androidInitializationSettings =
-        AndroidInitializationSettings("ic_launcher");
+        AndroidInitializationSettings("terature_icon");
 
     IOSInitializationSettings iosInitializationSettings =
         IOSInitializationSettings();
