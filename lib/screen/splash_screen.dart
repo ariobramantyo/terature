@@ -68,13 +68,13 @@ class SplashScreen extends StatelessWidget {
                       style: TextStyle(fontFamily: 'Poppins', fontSize: 23),
                       children: [
                     TextSpan(
-                        text: 'Aturlah\nkegiatanmu\nmulai dari\n',
+                        text: 'Manage\nyour activity\nstart from\n',
                         style: TextStyle(
                             color: themeController.isDarkMode.value
                                 ? Colors.white
                                 : Colors.black)),
                     TextSpan(
-                        text: 'sekarang',
+                        text: 'now',
                         style: TextStyle(
                             color: AppColor.lightPrimaryColor,
                             fontWeight: FontWeight.w600)),

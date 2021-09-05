@@ -61,7 +61,6 @@ class Settings extends StatelessWidget {
     return Container(
       height: 60,
       width: double.infinity,
-      // margin: EdgeInsets.only(bottom: 25),
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       decoration:
           BoxDecoration(color: color, borderRadius: BorderRadius.circular(18)),
@@ -91,7 +90,7 @@ class Settings extends StatelessWidget {
                 width: 45,
                 decoration: BoxDecoration(
                     color: themeController.isDarkMode.value
-                        ? AppColor.darkFormFillColor
+                        ? Color(0xff585858)
                         : AppColor.lightSecondaryColor.withOpacity(0.5),
                     borderRadius: BorderRadius.circular(8)),
                 child: Center(
@@ -131,6 +130,7 @@ class Settings extends StatelessWidget {
               Row(
                 children: [
                   Stack(
+                    clipBehavior: Clip.none,
                     alignment: Alignment.center,
                     children: [
                       Obx(
@@ -163,7 +163,6 @@ class Settings extends StatelessWidget {
                         right: -6,
                         child: GestureDetector(
                           onTap: () async {
-                            // var user = FirebaseAuth.instance.currentUser;
                             await editDataController
                                 .updateUserPhoto(
                                     userController.loggedUser.value.uid!)
@@ -185,11 +184,17 @@ class Settings extends StatelessWidget {
                             height: 33,
                             width: 33,
                             decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Color(0xff353535).withOpacity(0.56)),
+                              shape: BoxShape.circle,
+                              color: themeController.isDarkMode.value
+                                  ? Color(0xff353535).withOpacity(0.56)
+                                  : AppColor.lightSecondaryColor
+                                      .withOpacity(0.7),
+                            ),
                             child: Icon(
                               Icons.photo_camera,
-                              color: Color(0xffFF810C),
+                              color: themeController.isDarkMode.value
+                                  ? Color(0xffFF810C)
+                                  : Colors.white,
                             ),
                           ),
                         ),
@@ -207,13 +212,14 @@ class Settings extends StatelessWidget {
                               userController.loggedUser.value.name!
                                   .split(' ')
                                   .first,
-                              style: textStyle,
+                              style: textStyle.copyWith(
+                                  fontWeight: FontWeight.w300),
                             ),
                             Text(
                                 getUserMiddleName(
                                     userController.loggedUser.value.name!),
                                 style: textStyle.copyWith(
-                                    fontWeight: FontWeight.w600)),
+                                    fontWeight: FontWeight.w500)),
                           ],
                         ),
                       )),
@@ -275,8 +281,6 @@ class Settings extends StatelessWidget {
               themeController.isDarkMode.value
                   ? AppColor.darkScondaryColor
                   : AppColor.lightFormFillColor),
-          // dataContainer('',
-          // userController.loggedUser.value.no ?? 'no number', false),
           SizedBox(height: 15),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

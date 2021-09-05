@@ -66,95 +66,18 @@ class AddTask extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Buat task\nbaru',
+                      'Create new\ntask',
                       style: textStyle.copyWith(
                         fontSize: 28,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    // Column(
-                    //   crossAxisAlignment: CrossAxisAlignment.start,
-                    //   children: [
-                    //     Text(
-                    //       'Judul task',
-                    //       style: textStyle,
-                    //     ),
-                    //     SizedBox(height: 11),
-                    //     Row(
-                    //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //       children: [
-                    //         InkWell(
-                    //           onTap: () {
-                    //             sheetController.isKeseharian.value =
-                    //                 !sheetController.isKeseharian.value;
-                    //             sheetController.isProject.value =
-                    //                 !sheetController.isProject.value;
-                    //           },
-                    //           child: Obx(() => Container(
-                    //                 height: 49,
-                    //                 width: 118,
-                    //                 decoration: BoxDecoration(
-                    //                     borderRadius: BorderRadius.circular(10),
-                    //                     color: sheetController.isKeseharian.value
-                    //                         ? Color(0xffFF810C)
-                    //                         : Colors.white,
-                    //                     border: Border.all(
-                    //                         color: sheetController.isKeseharian.value
-                    //                             ? Colors.white
-                    //                             : Color(0xffFF810C))),
-                    //                 child: Center(
-                    //                   child: Text(
-                    //                     'Keseharian',
-                    //                     style: textStyle.copyWith(
-                    //                         color: sheetController.isKeseharian.value
-                    //                             ? Colors.white
-                    //                             : Color(0xffFF810C),
-                    //                         fontWeight: FontWeight.w500),
-                    //                   ),
-                    //                 ),
-                    //               )),
-                    //         ),
-                    //         InkWell(
-                    //           onTap: () {
-                    //             sheetController.isKeseharian.value =
-                    //                 !sheetController.isKeseharian.value;
-                    //             sheetController.isProject.value =
-                    //                 !sheetController.isProject.value;
-                    //           },
-                    //           child: Obx(() => Container(
-                    //                 height: 49,
-                    //                 width: 118,
-                    //                 decoration: BoxDecoration(
-                    //                     borderRadius: BorderRadius.circular(10),
-                    //                     color: sheetController.isProject.value
-                    //                         ? Color(0xffFF810C)
-                    //                         : Colors.white,
-                    //                     border: Border.all(
-                    //                         color: sheetController.isProject.value
-                    //                             ? Colors.white
-                    //                             : Color(0xffFF810C))),
-                    //                 child: Center(
-                    //                   child: Text(
-                    //                     'Project',
-                    //                     style: textStyle.copyWith(
-                    //                         color: sheetController.isProject.value
-                    //                             ? Colors.white
-                    //                             : Color(0xffFF810C),
-                    //                         fontWeight: FontWeight.w500),
-                    //                   ),
-                    //                 ),
-                    //               )),
-                    //         )
-                    //       ],
-                    //     )
-                    //   ],
-                    // ),
                     SizedBox(height: 21),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Judul task',
+                          'Task name',
                           style: textStyle,
                         ),
                         SizedBox(height: 11),
@@ -170,9 +93,8 @@ class AddTask extends StatelessWidget {
                                     ? Colors.white
                                     : Colors.black),
                             decoration: InputDecoration(
-                                hintText: 'Judul task',
+                                hintText: 'Task title',
                                 hintStyle: textStyle.copyWith(
-                                    // fontSize: 13,
                                     color: themeController.isDarkMode.value
                                         ? Colors.white
                                         : Colors.black),
@@ -193,44 +115,10 @@ class AddTask extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Deadline task',
+                          'Task deadline',
                           style: textStyle,
                         ),
                         SizedBox(height: 11),
-                        // GestureDetector(
-                        //   onTap: () {
-                        //     DatePicker.showDatePicker(
-                        //       context,
-                        //       minTime: DateTime(year, month, day),
-                        //       maxTime: DateTime(year + 2),
-                        //       theme: DatePickerTheme(
-                        //           doneStyle: TextStyle(
-                        //               fontFamily: 'Poppins', color: Color(0xffFF810C))),
-                        //       onConfirm: (date) {
-                        //         sheetController.onDateSubmit(date.toString());
-                        //         print('confirm $date');
-                        //       },
-                        //     );
-                        //   },
-                        //   child: Obx(() => Container(
-                        //         height: 36,
-                        //         padding: EdgeInsets.symmetric(horizontal: 10),
-                        //         margin: EdgeInsets.only(bottom: 14),
-                        //         decoration: BoxDecoration(
-                        //             borderRadius: BorderRadius.circular(10),
-                        //             border: Border.all(color: Color(0xffFF810C))),
-                        //         child: Row(
-                        //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        //           children: [
-                        //             Text(
-                        //               sheetController.dateSubmit.value,
-                        //               style: textStyle.copyWith(fontSize: 13),
-                        //             ),
-                        //             Icon(Icons.keyboard_arrow_down)
-                        //           ],
-                        //         ),
-                        //       )),
-                        // ),
                         GestureDetector(
                             onTap: () {
                               DatePicker.showTimePicker(
@@ -284,7 +172,9 @@ class AddTask extends StatelessWidget {
                                             : Colors.black),
                                   ),
                                   Icon(Icons.keyboard_arrow_down,
-                                      color: Colors.white)
+                                      color: themeController.isDarkMode.value
+                                          ? Colors.white
+                                          : Colors.black)
                                 ],
                               ),
                             )),
@@ -294,7 +184,7 @@ class AddTask extends StatelessWidget {
                     Center(
                       child: ElevatedButton(
                           onPressed: () {
-                            if (sheetController.timeSubmit.value != 'Jam' &&
+                            if (sheetController.timeSubmit.value != 'Time' &&
                                 sheetController.taskController.text != '') {
                               if (DateTime.parse(
                                       sheetController.dateSubmit.value)
@@ -321,8 +211,8 @@ class AddTask extends StatelessWidget {
                                 Get.defaultDialog(
                                   title: 'Error',
                                   middleText:
-                                      'Jam deadline harus berupa jam dimasa mendatang. Cobalah masukkan jam deadline yang valid',
-                                  textCancel: 'kembali',
+                                      'Deadline task must be a future time. Try input a valid deadline time',
+                                  textCancel: 'back',
                                   onCancel: () => Get.back(),
                                   backgroundColor: Color(0xff353535),
                                   cancelTextColor: Color(0xffFF7C02),
@@ -334,7 +224,7 @@ class AddTask extends StatelessWidget {
                               }
 
                               sheetController.dateSubmit.value = 'Tanggal';
-                              sheetController.timeSubmit.value = 'Jam';
+                              sheetController.timeSubmit.value = 'Time';
                               sheetController.taskController.text = '';
                             }
                           },

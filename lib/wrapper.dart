@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:terature/controllers/logged_user_controller.dart';
-import 'package:terature/screen/home_screen.dart';
+import 'package:terature/screen/nav_bar.dart';
 import 'package:terature/screen/login_screen.dart';
 import 'package:terature/services/auth_service.dart';
 import 'package:terature/services/firestore_service.dart';

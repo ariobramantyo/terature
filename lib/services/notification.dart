@@ -31,6 +31,7 @@ class NotificationService {
         'channel name',
         'channel description',
         importance: Importance.high,
+        styleInformation: BigTextStyleInformation(''),
       ),
       iOS: IOSNotificationDetails(),
     );
@@ -49,7 +50,7 @@ class NotificationService {
       return _notification.zonedSchedule(
           task.id,
           'terature',
-          'task ${task.judul} akan segera melewati waktu tenggat. Segera selesaikan task mu',
+          'Your task, "${task.judul}" has reached the deadline! make sure you have finished it',
           tz.TZDateTime.from(DateTime.parse(task.tanggalDeadline), tz.local),
           await _notificationDetails(),
           payload: payload,
@@ -71,7 +72,7 @@ class NotificationService {
         await _notification.zonedSchedule(
           element.id,
           'terature',
-          'task ${element.judul} akan segera melewati waktu tenggat. Segera selesaikan task mu',
+          'Your task, "${element.judul}" has reached the deadline! make sure you have finished it',
           tz.TZDateTime.from(DateTime.parse(element.tanggalDeadline), tz.local),
           await _notificationDetails(),
           payload: 'terature',

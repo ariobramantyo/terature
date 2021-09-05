@@ -188,7 +188,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Text(
                   'Sign Up',
                   style: TextStyle(
-                      // color: Colors.white,
                       fontFamily: 'Poppins',
                       fontSize: 23,
                       fontWeight: FontWeight.w500),
@@ -214,16 +213,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           GestureDetector(
                             onTap: () async {
                               await AuthService.googleSignIn(context);
-                              //     .then((value) {
-                              //   var user = FirebaseAuth.instance.currentUser;
-                              //   FirestoreService.addUserDataToFirestore(
-                              //       FirebaseAuth.instance.currentUser,
-                              //       UserData(
-                              //           name: user!.displayName!,
-                              //           email: user.email!,
-                              //           no: user.phoneNumber!,
-                              //           imageUrl: user.photoURL!));
-                              // });
                               Navigator.pop(context);
                             },
                             child: Container(
@@ -244,16 +233,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           GestureDetector(
                             onTap: () async {
                               await AuthService.facebookSignIn(context);
-                              //     .then((value) {
-                              //   var user = FirebaseAuth.instance.currentUser;
-                              //   FirestoreService.addUserDataToFirestore(
-                              //       FirebaseAuth.instance.currentUser,
-                              //       UserData(
-                              //           name: user!.displayName!,
-                              //           email: user.email!,
-                              //           no: user.phoneNumber!,
-                              //           imageUrl: user.photoURL!));
-                              // });
                               Navigator.pop(context);
                             },
                             child: Container(
@@ -277,7 +256,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         Obx(
                           () => _formField(
                               _namaController,
-                              'Nama',
+                              'Username',
                               _namaFieldFocus,
                               themeController.isDarkMode.value
                                   ? _namadDarkColor
@@ -300,7 +279,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         Obx(() => _formField(
                                 _noController,
-                                'No telefon',
+                                'Phone number',
                                 _noFieldFocus,
                                 themeController.isDarkMode.value
                                     ? _noDarkColor
@@ -373,26 +352,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           ),
                         );
-
-                        // .then((value) {
-                        // var user = FirebaseAuth.instance.currentUser;
-                        // FirestoreService.addUserDataToFirestore(
-                        //     FirebaseAuth.instance.currentUser,
-                        //     UserData(
-                        //       name: _namaController.text,
-                        //       email: _emailController.text,
-                        //       no: _noController.text,
-                        //     ));
-                        // });
-                        // UserData userData = UserData(
-                        //     name: _namaController.text,
-                        //     email: _emailController.text,
-                        //     no: _noController.text);
-                        // FirebaseFirestore.instance
-                        //     .collection('user')
-                        //     .doc(FirebaseAuth.instance.currentUser!.uid)
-                        //     .collection('data')
-                        //     .add(userData.toMap());
                         Navigator.pop(context);
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'weak-password') {

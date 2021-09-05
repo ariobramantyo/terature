@@ -145,17 +145,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     GestureDetector(
                       onTap: () async {
                         await AuthService.googleSignIn(context);
-                        //     .then((value) {
-                        //   var user = FirebaseAuth.instance.currentUser;
-                        //   FirestoreService.addUserDataToFirestore(
-                        //       FirebaseAuth.instance.currentUser,
-                        //       UserData(
-                        //           name: user!.displayName!,
-                        //           email: user.email!,
-                        //           no: user.phoneNumber!,
-                        //           imageUrl: user.photoURL!));
-                        // });
-                        // Navigator.pop(context);
                       },
                       child: Container(
                           height: 45,
@@ -175,17 +164,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     GestureDetector(
                       onTap: () async {
                         await AuthService.facebookSignIn(context);
-                        //     .then((value) {
-                        //   var user = FirebaseAuth.instance.currentUser;
-                        //   FirestoreService.addUserDataToFirestore(
-                        //       FirebaseAuth.instance.currentUser,
-                        //       UserData(
-                        //           name: user!.displayName!,
-                        //           email: user.email!,
-                        //           no: user.phoneNumber!,
-                        //           imageUrl: user.photoURL!));
-                        // });
-                        // Navigator.pop(context);
                       },
                       child: Container(
                           height: 45,
@@ -201,6 +179,30 @@ class _LoginScreenState extends State<LoginScreen> {
           SizedBox(
             height: 53,
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Or login with ',
+                style: TextStyle(
+                    color: themeController.isDarkMode.value
+                        ? Colors.white
+                        : AppColor.lightSecondaryColor,
+                    fontFamily: 'Poppins',
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500),
+              ),
+              Text(
+                'email',
+                style: TextStyle(
+                    color: AppColor.lightPrimaryColor,
+                    fontFamily: 'Poppins',
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700),
+              )
+            ],
+          ),
+          SizedBox(height: 13),
           Form(
               key: _key,
               child: Column(
@@ -255,21 +257,6 @@ class _LoginScreenState extends State<LoginScreen> {
               )),
           SizedBox(
             height: 5,
-          ),
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              width: 256,
-              child: Text(
-                'Forgot password?',
-                textAlign: TextAlign.end,
-                style: TextStyle(
-                    color: Color(0xFFA7A7A7),
-                    fontFamily: 'Poppins',
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500),
-              ),
-            ),
           ),
           GestureDetector(
             onTap: () async {
@@ -338,7 +325,7 @@ class _LoginScreenState extends State<LoginScreen> {
               () => Text('Dont have an account? ',
                   style: TextStyle(
                       color: themeController.isDarkMode.value
-                          ? AppColor.darkThirdColor
+                          ? Colors.grey
                           : Colors.grey[800],
                       fontFamily: 'Poppins',
                       fontSize: 13,

@@ -30,8 +30,7 @@ class FirestoreService {
           .doc(docID)
           .update({'isDone': false});
 
-      Get.snackbar('Task kembali dikerjakan',
-          'task ${task.judul} dipindahkan ke dalam tab on going',
+      Get.snackbar('The task is back on', '${task.judul} moved to on going tab',
           colorText: Colors.white);
     } else {
       FirebaseFirestore.instance
@@ -41,8 +40,7 @@ class FirestoreService {
           .doc(docID)
           .update({'isDone': true});
 
-      Get.snackbar('Task selesai',
-          'task ${task.judul} dipindahkan ke dalam tab completed',
+      Get.snackbar('Task completed', '${task.judul} moved to completed tab',
           colorText: Colors.white);
     }
   }
