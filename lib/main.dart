@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('BUILD MYAPP ======================================================');
     return Obx(() => GetMaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Terature',

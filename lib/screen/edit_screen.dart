@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:terature/constant/color.dart';
 import 'package:terature/controllers/edit_data_controlller.dart';
+import 'package:terature/controllers/theme_controller.dart';
 import 'package:terature/services/firestore_service.dart';
 
 class EditScreen extends StatelessWidget {
@@ -14,15 +16,17 @@ class EditScreen extends StatelessWidget {
       fontFamily: 'Poppins', fontSize: 15, fontWeight: FontWeight.w500);
 
   final editDataController = Get.find<EditDataController>();
+  final themeController = Get.find<AppTheme>();
 
   @override
   Widget build(BuildContext context) {
     editDataController.editDataController.text = content;
+    print('BUILD EDIT ======================================================');
     return Scaffold(
-      backgroundColor: Color(0xff151515),
       appBar: AppBar(
         title: Text(type, style: textStyle.copyWith(fontSize: 23)),
-        backgroundColor: Color(0xff151515),
+        backwardsCompatibility: false,
+        elevation: 0,
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -34,15 +38,17 @@ class EditScreen extends StatelessWidget {
               child: TextField(
                 textAlignVertical: TextAlignVertical.bottom,
                 controller: editDataController.editDataController,
-                style: textStyle.copyWith(color: Colors.white),
+                style: textStyle,
                 keyboardType: type == 'Phone number'
                     ? TextInputType.number
                     : TextInputType.text,
                 decoration: InputDecoration(
                     hintText: type,
-                    hintStyle: textStyle.copyWith(color: Colors.white),
+                    hintStyle: textStyle,
                     filled: true,
-                    fillColor: Color(0xff353535),
+                    fillColor: themeController.isDarkMode.value
+                        ? AppColor.darkScondaryColor
+                        : AppColor.lightFormFillColor,
                     border: OutlineInputBorder(borderSide: BorderSide.none)),
               ),
             ),
@@ -100,7 +106,7 @@ class EditScreen extends StatelessWidget {
                 child: Center(
                   child: Text(
                     'Save',
-                    style: textStyle,
+                    style: textStyle.copyWith(color: Colors.white),
                   ),
                 ),
                 style: ElevatedButton.styleFrom(

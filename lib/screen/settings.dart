@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:terature/constant/color.dart';
 import 'package:terature/controllers/edit_data_controlller.dart';
 import 'package:terature/controllers/logged_user_controller.dart';
 import 'package:terature/controllers/navbar_controller.dart';
@@ -55,15 +56,15 @@ class Settings extends StatelessWidget {
     navBarController.currentTab.value = 0;
   }
 
-  Widget dataContainer(
-      String title, String content, bool isEditable, void Function() func) {
+  Widget dataContainer(String title, String content, bool isEditable,
+      void Function() func, Color color) {
     return Container(
       height: 60,
       width: double.infinity,
       // margin: EdgeInsets.only(bottom: 25),
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-      decoration: BoxDecoration(
-          color: Color(0xff353535), borderRadius: BorderRadius.circular(18)),
+      decoration:
+          BoxDecoration(color: color, borderRadius: BorderRadius.circular(18)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -72,11 +73,14 @@ class Settings extends StatelessWidget {
             children: [
               Text(
                 title,
-                style:
-                    textStyle.copyWith(fontSize: 12, color: Color(0xffAFAFAF)),
+                style: textStyle.copyWith(
+                    fontSize: 12,
+                    color: themeController.isDarkMode.value
+                        ? Color(0xffAFAFAF)
+                        : AppColor.lightPrimaryColor),
               ),
               Text(content == '' ? 'no nomber' : content,
-                  style: textStyle.copyWith(fontSize: 15, color: Colors.white)),
+                  style: textStyle.copyWith(fontSize: 15)),
             ],
           ),
           if (isEditable)
@@ -86,13 +90,15 @@ class Settings extends StatelessWidget {
                 height: 24,
                 width: 45,
                 decoration: BoxDecoration(
-                    color: Color(0xff585858),
+                    color: themeController.isDarkMode.value
+                        ? AppColor.darkFormFillColor
+                        : AppColor.lightSecondaryColor.withOpacity(0.5),
                     borderRadius: BorderRadius.circular(8)),
                 child: Center(
                   child: Text(
                     'edit',
                     style: textStyle.copyWith(
-                        color: Color(0xffFF810C), fontSize: 15),
+                        color: AppColor.lightPrimaryColor, fontSize: 15),
                   ),
                 ),
               ),
@@ -104,16 +110,17 @@ class Settings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('uid : ${FirebaseAuth.instance.currentUser!.uid}');
+    print(
+        'BUILD SETTINGS ======================================================');
     return Scaffold(
       appBar: AppBar(
         title: Text(
           'Settings',
           style: textStyle.copyWith(fontSize: 23),
         ),
-        backgroundColor: Color(0xff151515),
+        backwardsCompatibility: false,
+        elevation: 0,
       ),
-      backgroundColor: Color(0xff151515),
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 20),
         children: [
@@ -200,12 +207,13 @@ class Settings extends StatelessWidget {
                               userController.loggedUser.value.name!
                                   .split(' ')
                                   .first,
-                              style: textStyle.copyWith(color: Colors.white),
+                              style: textStyle,
                             ),
                             Text(
                                 getUserMiddleName(
                                     userController.loggedUser.value.name!),
-                                style: textStyle.copyWith(color: Colors.white)),
+                                style: textStyle.copyWith(
+                                    fontWeight: FontWeight.w600)),
                           ],
                         ),
                       )),
@@ -229,32 +237,44 @@ class Settings extends StatelessWidget {
             children: [
               Text(
                 'Dark mode',
-                style: textStyle.copyWith(fontSize: 16, color: Colors.white),
+                style: textStyle.copyWith(fontSize: 16),
               ),
               Obx(() => Switch(
-                  value: themeController.darkMode.value,
+                  value: themeController.isDarkMode.value,
                   activeColor: Color(0xffFF810C),
-                  trackColor: MaterialStateProperty.all(Color(0xff585858)),
+                  trackColor: themeController.isDarkMode.value
+                      ? MaterialStateProperty.all(Color(0xff585858))
+                      : MaterialStateProperty.all(
+                          AppColor.lightSecondaryColor.withOpacity(0.5)),
                   onChanged: (_) {
                     themeController.changeTheme();
-                    print('sesudah:  ${themeController.darkMode.value}');
+                    print('sesudah:  ${themeController.isDarkMode.value}');
                   })),
             ],
           ),
           SizedBox(height: 10),
           Obx(
             () => dataContainer(
-              'Phone Number',
-              userController.loggedUser.value.no ?? 'no number',
-              true,
-              () => Get.to(EditScreen(
-                  type: 'Phone number',
-                  content: userController.loggedUser.value.no ?? 'no number')),
-            ),
+                'Phone Number',
+                userController.loggedUser.value.no ?? 'no number',
+                true,
+                () => Get.to(EditScreen(
+                    type: 'Phone number',
+                    content:
+                        userController.loggedUser.value.no ?? 'no number')),
+                themeController.isDarkMode.value
+                    ? AppColor.darkScondaryColor
+                    : AppColor.lightFormFillColor),
           ),
           SizedBox(height: 25),
-          dataContainer('Email', userController.loggedUser.value.email ?? '',
-              false, () {}),
+          dataContainer(
+              'Email',
+              userController.loggedUser.value.email ?? '',
+              false,
+              () {},
+              themeController.isDarkMode.value
+                  ? AppColor.darkScondaryColor
+                  : AppColor.lightFormFillColor),
           // dataContainer('',
           // userController.loggedUser.value.no ?? 'no number', false),
           SizedBox(height: 15),
@@ -263,12 +283,15 @@ class Settings extends StatelessWidget {
             children: [
               Text(
                 'Notification',
-                style: textStyle.copyWith(fontSize: 16, color: Colors.white),
+                style: textStyle.copyWith(fontSize: 16),
               ),
               Obx(() => Switch(
                   value: notificationController.allowNotification.value,
                   activeColor: Color(0xffFF810C),
-                  trackColor: MaterialStateProperty.all(Color(0xff585858)),
+                  trackColor: themeController.isDarkMode.value
+                      ? MaterialStateProperty.all(Color(0xff585858))
+                      : MaterialStateProperty.all(
+                          AppColor.lightSecondaryColor.withOpacity(0.5)),
                   onChanged: (_) {
                     notificationController.changeNotificationStatus(
                         FirebaseAuth.instance.currentUser);
@@ -286,11 +309,14 @@ class Settings extends StatelessWidget {
                 margin: EdgeInsets.only(top: 31),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Color(0xff2E2E2E)),
+                    color: themeController.isDarkMode.value
+                        ? AppColor.darkScondaryColor
+                        : AppColor.lightPrimaryColor),
                 child: Center(
                   child: Text(
                     'Log Out',
-                    style: textStyle.copyWith(fontSize: 15),
+                    style:
+                        textStyle.copyWith(fontSize: 15, color: Colors.white),
                   ),
                 ),
               ),

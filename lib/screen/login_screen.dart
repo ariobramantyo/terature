@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:terature/constant/color.dart';
+import 'package:terature/controllers/theme_controller.dart';
 import 'package:terature/screen/sign_up_screen.dart';
 import 'package:terature/services/auth_service.dart';
 import 'package:terature/services/firestore_service.dart';
@@ -13,14 +16,19 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final themeController = Get.find<AppTheme>();
+
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   final _key = GlobalKey<FormState>();
 
   FocusNode _emailFieldFocus = FocusNode();
   FocusNode _passwordFieldFocus = FocusNode();
-  Color _emailColor = Color(0xFF353535);
-  Color _passwordColor = Color(0xFF353535);
+  Color _emailDarkColor = AppColor.darkFormFillColor;
+  Color _passwordDarkColor = AppColor.darkFormFillColor;
+  Color _emailLightColor = AppColor.lightFormFillColor;
+  Color _passwordLightColor = AppColor.lightFormFillColor;
+
   bool _obscureText = true;
 
   OutlineInputBorder _outlineBorder = OutlineInputBorder(
@@ -37,22 +45,26 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailFieldFocus.addListener(() {
       if (_emailFieldFocus.hasFocus) {
         setState(() {
-          _emailColor = Color(0xFF575757);
+          _emailDarkColor = AppColor.darkFormFillFocusColor;
+          _emailLightColor = AppColor.lightFormfillFocusColor;
         });
       } else {
         setState(() {
-          _emailColor = Color(0xFF353535);
+          _emailDarkColor = AppColor.darkFormFillColor;
+          _emailLightColor = AppColor.lightFormFillColor;
         });
       }
     });
     _passwordFieldFocus.addListener(() {
       if (_passwordFieldFocus.hasFocus) {
         setState(() {
-          _passwordColor = Color(0xFF575757);
+          _passwordDarkColor = AppColor.darkFormFillFocusColor;
+          _passwordLightColor = AppColor.lightFormfillFocusColor;
         });
       } else {
         setState(() {
-          _passwordColor = Color(0xFF353535);
+          _passwordDarkColor = AppColor.darkFormFillColor;
+          _passwordLightColor = AppColor.lightFormFillColor;
         });
       }
     });
@@ -69,20 +81,20 @@ class _LoginScreenState extends State<LoginScreen> {
         controller: controller,
         textAlignVertical: TextAlignVertical.center,
         style: TextStyle(
-            fontFamily: 'Poppins',
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
-            color: Colors.white),
+          fontFamily: 'Poppins',
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+        ),
         focusNode: focusNode,
         obscureText: obscure,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.symmetric(horizontal: 14),
             hintText: hint,
             hintStyle: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-                color: Colors.white),
+              fontFamily: 'Poppins',
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+            ),
             filled: true,
             fillColor: color,
             focusedBorder: _outlineBorder,
@@ -101,103 +113,91 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('BUILD LOGIN ======================================================');
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Color(0xff0F0F0F),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            margin: EdgeInsets.only(top: 78, left: 19, bottom: 31),
-            child: Row(
-              children: [
-                Container(
-                  height: 32,
-                  width: 32,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle, color: Color(0xFFFF7A00)),
-                  child: Icon(
-                    Icons.arrow_back,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(
-                  width: 11,
-                ),
-                Text(
-                  'Log In',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Poppins',
-                      fontSize: 23,
-                      fontWeight: FontWeight.w500),
-                )
-              ],
-            ),
-          ),
-          Container(
             width: 256,
-            height: 45,
-            decoration: BoxDecoration(
-                color: Color(0xff575757),
-                borderRadius: BorderRadius.circular(10)),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                GestureDetector(
-                  onTap: () async {
-                    await AuthService.googleSignIn(context);
-                    //     .then((value) {
-                    //   var user = FirebaseAuth.instance.currentUser;
-                    //   FirestoreService.addUserDataToFirestore(
-                    //       FirebaseAuth.instance.currentUser,
-                    //       UserData(
-                    //           name: user!.displayName!,
-                    //           email: user.email!,
-                    //           no: user.phoneNumber!,
-                    //           imageUrl: user.photoURL!));
-                    // });
-                    // Navigator.pop(context);
-                  },
-                  child: Container(
-                      height: 45,
-                      width: 128,
-                      padding: EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                          color: Color(0xFF262626),
-                          borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(10),
-                              topLeft: Radius.circular(10))),
-                      child: SvgPicture.asset(
-                        'assets/google_logo.svg',
-                      )),
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    await AuthService.facebookSignIn(context);
-                    //     .then((value) {
-                    //   var user = FirebaseAuth.instance.currentUser;
-                    //   FirestoreService.addUserDataToFirestore(
-                    //       FirebaseAuth.instance.currentUser,
-                    //       UserData(
-                    //           name: user!.displayName!,
-                    //           email: user.email!,
-                    //           no: user.phoneNumber!,
-                    //           imageUrl: user.photoURL!));
-                    // });
-                    // Navigator.pop(context);
-                  },
-                  child: Container(
-                      height: 45,
-                      width: 128,
-                      padding: EdgeInsets.all(10),
-                      child: SvgPicture.asset(
-                        'assets/facebook_logo.svg',
-                      )),
-                )
-              ],
+            margin: EdgeInsets.only(top: 78, bottom: 31),
+            child: Text(
+              'Log In',
+              style: TextStyle(
+                  // color: Colors.white,
+                  fontFamily: 'Poppins',
+                  fontSize: 23,
+                  fontWeight: FontWeight.w500),
             ),
           ),
+          Obx(() => Container(
+                width: 256,
+                height: 45,
+                decoration: BoxDecoration(
+                    color: themeController.isDarkMode.value
+                        ? AppColor.darkThirdColor
+                        : AppColor.lightSecondaryColor,
+                    borderRadius: BorderRadius.circular(10)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        await AuthService.googleSignIn(context);
+                        //     .then((value) {
+                        //   var user = FirebaseAuth.instance.currentUser;
+                        //   FirestoreService.addUserDataToFirestore(
+                        //       FirebaseAuth.instance.currentUser,
+                        //       UserData(
+                        //           name: user!.displayName!,
+                        //           email: user.email!,
+                        //           no: user.phoneNumber!,
+                        //           imageUrl: user.photoURL!));
+                        // });
+                        // Navigator.pop(context);
+                      },
+                      child: Container(
+                          height: 45,
+                          width: 128,
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                              color: themeController.isDarkMode.value
+                                  ? AppColor.darkScondaryColor
+                                  : AppColor.lightPrimaryColor,
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(10),
+                                  topLeft: Radius.circular(10))),
+                          child: SvgPicture.asset(
+                            'assets/google_logo.svg',
+                          )),
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        await AuthService.facebookSignIn(context);
+                        //     .then((value) {
+                        //   var user = FirebaseAuth.instance.currentUser;
+                        //   FirestoreService.addUserDataToFirestore(
+                        //       FirebaseAuth.instance.currentUser,
+                        //       UserData(
+                        //           name: user!.displayName!,
+                        //           email: user.email!,
+                        //           no: user.phoneNumber!,
+                        //           imageUrl: user.photoURL!));
+                        // });
+                        // Navigator.pop(context);
+                      },
+                      child: Container(
+                          height: 45,
+                          width: 128,
+                          padding: EdgeInsets.all(10),
+                          child: SvgPicture.asset(
+                            'assets/facebook_logo.svg',
+                          )),
+                    )
+                  ],
+                ),
+              )),
           SizedBox(
             height: 53,
           ),
@@ -205,36 +205,52 @@ class _LoginScreenState extends State<LoginScreen> {
               key: _key,
               child: Column(
                 children: [
-                  _formField(_emailController, 'Email', _emailFieldFocus,
-                      _emailColor, false),
+                  Obx(
+                    () => _formField(
+                        _emailController,
+                        'Email',
+                        _emailFieldFocus,
+                        themeController.isDarkMode.value
+                            ? _emailDarkColor
+                            : _emailLightColor,
+                        false),
+                  ),
                   SizedBox(
                     height: 22,
                   ),
-                  _formField(
-                    _passwordController,
-                    'Password',
-                    _passwordFieldFocus,
-                    _passwordColor,
-                    _obscureText,
-                    suffix: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _obscureText = !_obscureText;
-                        });
-                      },
-                      child: _obscureText
-                          ? Icon(
-                              Icons.visibility_off_outlined,
-                              color: Colors.white,
-                              size: 18,
-                            )
-                          : Icon(
-                              Icons.visibility_outlined,
-                              color: Colors.white,
-                              size: 18,
-                            ),
+                  Obx(
+                    () => _formField(
+                      _passwordController,
+                      'Password',
+                      _passwordFieldFocus,
+                      themeController.isDarkMode.value
+                          ? _passwordDarkColor
+                          : _passwordLightColor,
+                      _obscureText,
+                      suffix: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _obscureText = !_obscureText;
+                          });
+                        },
+                        child: _obscureText
+                            ? Icon(
+                                Icons.visibility_off_outlined,
+                                color: themeController.isDarkMode.value
+                                    ? Colors.white
+                                    : AppColor.lightPrimaryColor,
+                                size: 18,
+                              )
+                            : Icon(
+                                Icons.visibility_outlined,
+                                color: themeController.isDarkMode.value
+                                    ? Colors.white
+                                    : AppColor.lightPrimaryColor,
+                                size: 18,
+                              ),
+                      ),
                     ),
-                  ),
+                  )
                 ],
               )),
           SizedBox(
@@ -296,7 +312,7 @@ class _LoginScreenState extends State<LoginScreen> {
               width: 256,
               margin: EdgeInsets.only(top: 44, bottom: 20),
               decoration: BoxDecoration(
-                  color: Color(0xFFFF7A00),
+                  color: AppColor.lightPrimaryColor,
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
@@ -318,12 +334,16 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text('Dont have an account? ',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Poppins',
-                    fontSize: 13,
-                    fontWeight: FontWeight.w400)),
+            Obx(
+              () => Text('Dont have an account? ',
+                  style: TextStyle(
+                      color: themeController.isDarkMode.value
+                          ? AppColor.darkThirdColor
+                          : Colors.grey[800],
+                      fontFamily: 'Poppins',
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400)),
+            ),
             GestureDetector(
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -334,7 +354,8 @@ class _LoginScreenState extends State<LoginScreen> {
               },
               child: Text('Sign up',
                   style: TextStyle(
-                      color: Color(0xFFFF7A00), fontWeight: FontWeight.w700)),
+                      color: AppColor.lightPrimaryColor,
+                      fontWeight: FontWeight.w700)),
             )
           ])
         ],

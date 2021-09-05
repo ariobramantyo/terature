@@ -2,6 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:terature/constant/color.dart';
+import 'package:terature/controllers/theme_controller.dart';
 import 'package:terature/model/user.dart';
 import 'package:terature/screen/login_screen.dart';
 import 'package:terature/services/auth_service.dart';
@@ -15,6 +18,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final themeController = Get.find<AppTheme>();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _noController = TextEditingController();
@@ -25,10 +29,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
   FocusNode _passwordFieldFocus = FocusNode();
   FocusNode _noFieldFocus = FocusNode();
   FocusNode _namaFieldFocus = FocusNode();
-  Color _emailColor = Color(0xFF353535);
-  Color _passwordColor = Color(0xFF353535);
-  Color _noColor = Color(0xFF353535);
-  Color _namaColor = Color(0xFF353535);
+
+  Color _emailDarkColor = AppColor.darkFormFillColor;
+  Color _passwordDarkColor = AppColor.darkFormFillColor;
+  Color _emailLightColor = AppColor.lightFormFillColor;
+  Color _passwordLightColor = AppColor.lightFormFillColor;
+
+  Color _noDarkColor = AppColor.darkFormFillColor;
+  Color _namadDarkColor = AppColor.darkFormFillColor;
+  Color _noLightColor = AppColor.lightFormFillColor;
+  Color _namaLightColor = AppColor.lightFormFillColor;
+
   bool _obscureText = true;
 
   OutlineInputBorder _outlineBorder = OutlineInputBorder(
@@ -47,44 +58,52 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _emailFieldFocus.addListener(() {
       if (_emailFieldFocus.hasFocus) {
         setState(() {
-          _emailColor = Color(0xFF575757);
+          _emailLightColor = AppColor.lightFormfillFocusColor;
+          _emailDarkColor = AppColor.darkFormFillFocusColor;
         });
       } else {
         setState(() {
-          _emailColor = Color(0xFF353535);
+          _emailLightColor = AppColor.lightFormFillColor;
+          _emailDarkColor = AppColor.darkFormFillColor;
         });
       }
     });
     _passwordFieldFocus.addListener(() {
       if (_passwordFieldFocus.hasFocus) {
         setState(() {
-          _passwordColor = Color(0xFF575757);
+          _passwordLightColor = AppColor.lightFormfillFocusColor;
+          _passwordDarkColor = AppColor.darkFormFillFocusColor;
         });
       } else {
         setState(() {
-          _passwordColor = Color(0xFF353535);
+          _passwordLightColor = AppColor.lightFormFillColor;
+          _passwordDarkColor = AppColor.darkFormFillColor;
         });
       }
     });
     _noFieldFocus.addListener(() {
       if (_noFieldFocus.hasFocus) {
         setState(() {
-          _noColor = Color(0xFF575757);
+          _noLightColor = AppColor.lightFormfillFocusColor;
+          _noDarkColor = AppColor.darkFormFillFocusColor;
         });
       } else {
         setState(() {
-          _noColor = Color(0xFF353535);
+          _noLightColor = AppColor.lightFormFillColor;
+          _noDarkColor = AppColor.lightFormFillColor;
         });
       }
     });
     _namaFieldFocus.addListener(() {
       if (_namaFieldFocus.hasFocus) {
         setState(() {
-          _namaColor = Color(0xFF575757);
+          _namaLightColor = AppColor.lightFormfillFocusColor;
+          _namadDarkColor = AppColor.darkFormFillFocusColor;
         });
       } else {
         setState(() {
-          _namaColor = Color(0xFF353535);
+          _namaLightColor = AppColor.lightFormFillColor;
+          _namadDarkColor = AppColor.darkFormFillColor;
         });
       }
     });
@@ -103,10 +122,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
           controller: controller,
           textAlignVertical: TextAlignVertical.center,
           style: TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-              color: Colors.white),
+            fontFamily: 'Poppins',
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+          ),
           focusNode: focusNode,
           obscureText: obscure,
           keyboardType: inputType == null ? TextInputType.text : inputType,
@@ -114,10 +133,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
               contentPadding: EdgeInsets.symmetric(horizontal: 14),
               hintText: hint,
               hintStyle: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white),
+                fontFamily: 'Poppins',
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
               filled: true,
               fillColor: color,
               focusedBorder: _outlineBorder,
@@ -137,9 +156,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(
+        'BUILD SIGN UP ======================================================');
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Color(0xff0F0F0F),
       body: ListView(
         padding: EdgeInsets.zero,
         children: [
@@ -168,7 +188,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Text(
                   'Sign Up',
                   style: TextStyle(
-                      color: Colors.white,
+                      // color: Colors.white,
                       fontFamily: 'Poppins',
                       fontSize: 23,
                       fontWeight: FontWeight.w500),
@@ -180,69 +200,73 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  width: 256,
-                  height: 45,
-                  decoration: BoxDecoration(
-                      color: Color(0xff575757),
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      GestureDetector(
-                        onTap: () async {
-                          await AuthService.googleSignIn(context);
-                          //     .then((value) {
-                          //   var user = FirebaseAuth.instance.currentUser;
-                          //   FirestoreService.addUserDataToFirestore(
-                          //       FirebaseAuth.instance.currentUser,
-                          //       UserData(
-                          //           name: user!.displayName!,
-                          //           email: user.email!,
-                          //           no: user.phoneNumber!,
-                          //           imageUrl: user.photoURL!));
-                          // });
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                            height: 45,
-                            width: 128,
-                            padding: EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                                color: Color(0xFF262626),
-                                borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(10),
-                                    topLeft: Radius.circular(10))),
-                            child: SvgPicture.asset(
-                              'assets/google_logo.svg',
-                            )),
+                Obx(() => Container(
+                      width: 256,
+                      height: 45,
+                      decoration: BoxDecoration(
+                          color: themeController.isDarkMode.value
+                              ? AppColor.darkThirdColor
+                              : AppColor.lightSecondaryColor,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          GestureDetector(
+                            onTap: () async {
+                              await AuthService.googleSignIn(context);
+                              //     .then((value) {
+                              //   var user = FirebaseAuth.instance.currentUser;
+                              //   FirestoreService.addUserDataToFirestore(
+                              //       FirebaseAuth.instance.currentUser,
+                              //       UserData(
+                              //           name: user!.displayName!,
+                              //           email: user.email!,
+                              //           no: user.phoneNumber!,
+                              //           imageUrl: user.photoURL!));
+                              // });
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                                height: 45,
+                                width: 128,
+                                padding: EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                    color: themeController.isDarkMode.value
+                                        ? AppColor.darkScondaryColor
+                                        : AppColor.lightPrimaryColor,
+                                    borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(10),
+                                        topLeft: Radius.circular(10))),
+                                child: SvgPicture.asset(
+                                  'assets/google_logo.svg',
+                                )),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              await AuthService.facebookSignIn(context);
+                              //     .then((value) {
+                              //   var user = FirebaseAuth.instance.currentUser;
+                              //   FirestoreService.addUserDataToFirestore(
+                              //       FirebaseAuth.instance.currentUser,
+                              //       UserData(
+                              //           name: user!.displayName!,
+                              //           email: user.email!,
+                              //           no: user.phoneNumber!,
+                              //           imageUrl: user.photoURL!));
+                              // });
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                                height: 45,
+                                width: 128,
+                                padding: EdgeInsets.all(10),
+                                child: SvgPicture.asset(
+                                  'assets/facebook_logo.svg',
+                                )),
+                          )
+                        ],
                       ),
-                      GestureDetector(
-                        onTap: () async {
-                          await AuthService.facebookSignIn(context);
-                          //     .then((value) {
-                          //   var user = FirebaseAuth.instance.currentUser;
-                          //   FirestoreService.addUserDataToFirestore(
-                          //       FirebaseAuth.instance.currentUser,
-                          //       UserData(
-                          //           name: user!.displayName!,
-                          //           email: user.email!,
-                          //           no: user.phoneNumber!,
-                          //           imageUrl: user.photoURL!));
-                          // });
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                            height: 45,
-                            width: 128,
-                            padding: EdgeInsets.all(10),
-                            child: SvgPicture.asset(
-                              'assets/facebook_logo.svg',
-                            )),
-                      )
-                    ],
-                  ),
-                ),
+                    )),
                 SizedBox(
                   height: 53,
                 ),
@@ -250,54 +274,82 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     key: _key,
                     child: Column(
                       children: [
-                        _formField(_namaController, 'Nama', _namaFieldFocus,
-                            _namaColor, false),
+                        Obx(
+                          () => _formField(
+                              _namaController,
+                              'Nama',
+                              _namaFieldFocus,
+                              themeController.isDarkMode.value
+                                  ? _namadDarkColor
+                                  : _namaLightColor,
+                              false),
+                        ),
                         SizedBox(
                           height: 25,
                         ),
-                        _formField(_emailController, 'Email', _emailFieldFocus,
-                            _emailColor, false),
+                        Obx(() => _formField(
+                            _emailController,
+                            'Email',
+                            _emailFieldFocus,
+                            themeController.isDarkMode.value
+                                ? _emailDarkColor
+                                : _emailLightColor,
+                            false)),
                         SizedBox(
                           height: 25,
                         ),
-                        _formField(_noController, 'No telefon', _noFieldFocus,
-                            _noColor, false, validate: (value) {
-                          if (value!.isEmpty) {
-                            return 'This field can\'t be empty';
-                          } else if (value.length < 11) {
-                            return 'Phone number minimum 11 number';
-                          } else if (value.length > 12) {
-                            return 'Phone number maximum 12 number';
-                          }
-                        }, inputType: TextInputType.number),
+                        Obx(() => _formField(
+                                _noController,
+                                'No telefon',
+                                _noFieldFocus,
+                                themeController.isDarkMode.value
+                                    ? _noDarkColor
+                                    : _noLightColor,
+                                false, validate: (value) {
+                              if (value!.isEmpty) {
+                                return 'This field can\'t be empty';
+                              } else if (value.length < 11) {
+                                return 'Phone number minimum 11 number';
+                              } else if (value.length > 12) {
+                                return 'Phone number maximum 12 number';
+                              }
+                            }, inputType: TextInputType.number)),
                         SizedBox(
                           height: 25,
                         ),
-                        _formField(
-                          _passwordController,
-                          'Password',
-                          _passwordFieldFocus,
-                          _passwordColor,
-                          _obscureText,
-                          suffix: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _obscureText = !_obscureText;
-                              });
-                            },
-                            child: _obscureText
-                                ? Icon(
-                                    Icons.visibility_off_outlined,
-                                    color: Colors.white,
-                                    size: 18,
-                                  )
-                                : Icon(
-                                    Icons.visibility_outlined,
-                                    color: Colors.white,
-                                    size: 18,
-                                  ),
+                        Obx(
+                          () => _formField(
+                            _passwordController,
+                            'Password',
+                            _passwordFieldFocus,
+                            themeController.isDarkMode.value
+                                ? _passwordDarkColor
+                                : _passwordLightColor,
+                            _obscureText,
+                            suffix: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _obscureText = !_obscureText;
+                                });
+                              },
+                              child: _obscureText
+                                  ? Icon(
+                                      Icons.visibility_off_outlined,
+                                      color: themeController.isDarkMode.value
+                                          ? Colors.white
+                                          : AppColor.lightPrimaryColor,
+                                      size: 18,
+                                    )
+                                  : Icon(
+                                      Icons.visibility_outlined,
+                                      color: themeController.isDarkMode.value
+                                          ? Colors.white
+                                          : AppColor.lightPrimaryColor,
+                                      size: 18,
+                                    ),
+                            ),
                           ),
-                        ),
+                        )
                       ],
                     )),
                 SizedBox(
